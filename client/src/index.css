@@ -4,33 +4,34 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-oswald: "Oswald", sans-serif;
+  --font-playfair: "Playfair Display", serif;
   --font-inter: "Inter", sans-serif;
 
-  --color-noir-black: #0a0a0a;
-  --color-noir-white: #ffffff;
-  --color-noir-grey: #888888;
-  --color-noir-gold: #D4AF37;
+  --color-bg-deep: #1a1a1a;
+  --color-text-light: #e8e8e8;
+  --color-text-muted: #b8b8b8;
+  --color-accent-rose: #d4a5a5;
+  --color-accent-gold: #d4c5a9;
   
-  --color-background: var(--color-noir-black);
-  --color-foreground: var(--color-noir-white);
-  --color-card: #111111;
-  --color-card-foreground: var(--color-noir-white);
-  --color-popover: #111111;
-  --color-popover-foreground: var(--color-noir-white);
-  --color-primary: var(--color-noir-gold);
-  --color-primary-foreground: var(--color-noir-black);
-  --color-secondary: #222222;
-  --color-secondary-foreground: var(--color-noir-white);
-  --color-muted: #222222;
-  --color-muted-foreground: var(--color-noir-grey);
-  --color-accent: var(--color-noir-gold);
-  --color-accent-foreground: var(--color-noir-black);
+  --color-background: var(--color-bg-deep);
+  --color-foreground: var(--color-text-light);
+  --color-card: #242424;
+  --color-card-foreground: var(--color-text-light);
+  --color-popover: #242424;
+  --color-popover-foreground: var(--color-text-light);
+  --color-primary: var(--color-accent-rose);
+  --color-primary-foreground: var(--color-bg-deep);
+  --color-secondary: #333333;
+  --color-secondary-foreground: var(--color-text-light);
+  --color-muted: #333333;
+  --color-muted-foreground: var(--color-text-muted);
+  --color-accent: var(--color-accent-gold);
+  --color-accent-foreground: var(--color-bg-deep);
   --color-destructive: hsl(0 100% 50%);
   --color-destructive-foreground: hsl(0 0% 100%);
-  --color-border: #333333;
-  --color-input: #222222;
-  --color-ring: var(--color-noir-gold);
+  --color-border: #404040;
+  --color-input: #333333;
+  --color-ring: var(--color-accent-rose);
 
   --radius-sm: 0px;
   --radius-md: 0px;
@@ -42,21 +43,16 @@
     @apply border-border;
   }
   body {
-    @apply font-inter antialiased bg-noir-black text-noir-white selection:bg-noir-gold selection:text-noir-black;
+    @apply font-inter antialiased bg-bg-deep text-text-light selection:bg-accent-rose selection:text-bg-deep;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-oswald uppercase;
+    @apply font-playfair;
   }
 }
 
 @layer utilities {
   .text-stroke {
     -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
-    color: transparent;
-  }
-  
-  .text-stroke-gold {
-    -webkit-text-stroke: 1px var(--color-noir-gold);
     color: transparent;
   }
   

@@ -1,0 +1,83 @@
+Project: High-End Wedding Cinematography Agency Portfolio Tech Stack: React (Vite), Tailwind CSS, Framer Motion Role: Senior Creative Developer (Awwwards/Vogue style)
+
+Goal: Build a single-page interactive portfolio. The aesthetic must be "Cinematic," "Emotional," and "Luxury." It should feel like a film production house website, not a standard wedding vendor site.
+
+Core Dependencies:
+
+framer-motion (Critical for the graceful, slow-motion feel)
+
+react-intersection-observer
+
+lucide-react
+
+clsx, tailwind-merge
+
+@fontsource/playfair-display (For elegant typography)
+
+@fontsource/inter (For clean UI text)
+
+Design System & Styling:
+
+Background: bg-neutral-900 (Soft Deep Charcoal - softer than pure black).
+
+Text: text-neutral-200 (Off-white).
+
+Accent: text-rose-200 or text-amber-100 (Champagne/Gold tones).
+
+Typography Mix:
+
+Headings: Elegant Serif (Playfair Display) for Couple Names.
+
+Subtitles: All-caps Sans-Serif (Inter) with wide tracking for "THE WEDDING FILM" labels.
+
+KEY COMPONENT: The "Love Stories" Horizontal Slider
+
+Interaction: A horizontal strip of cinematic wedding stills.
+
+Scroll Logic:
+
+Standard vertical scroll commands the horizontal movement.
+
+Speed: Make the friction slightly higher so the movement feels "heavy" and "graceful" rather than fast and snappy.
+
+The "Center Stage" Effect:
+
+As an image enters the center viewport:
+
+Scale: Increases to 1.3 (Zoom in on the emotion).
+
+Opacity: 100%.
+
+Filter: Full Color.
+
+Side Images:
+
+Scale: 0.9.
+
+Opacity: 50%.
+
+Filter: grayscale(100%) (This makes the center image pop dramatically).
+
+Dynamic Overlay UI:
+
+Location/Date: As the center image changes, update the text in the corner (e.g., "Udaipur, India" | "Dec 2024").
+
+Floating "Play" Button: A subtle circular button that follows the cursor when hovering over the active center image, inviting the user to "Watch Trailer."
+
+Services Section (Commercial vs. Wedding):
+
+A section below the slider titled "OUR CRAFT."
+
+Two distinct columns or tabs:
+
+"Weddings" (Cinematography, Candid Photography, Pre-Wedding).
+
+"Commercial" (Brand Stories, Editorials).
+
+Data Structure (data.js):
+
+Create a dataset with wedding-focused placeholders.
+
+Fields: id, coupleName (e.g., "Aditi & Vihaan"), category (e.g., "The Royal Wedding"), image (Use Unsplash keywords: indian wedding, bride, groom, luxury event), location.
+
+Output: Generate the App.jsx, data.js, and index.css. Focus heavily on the smoothness of the useTransform logic in Framer Motion.

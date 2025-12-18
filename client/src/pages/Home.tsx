@@ -1,15 +1,15 @@
 import Preloader from "@/components/Preloader";
-import ScrollGallery from "@/components/ScrollGallery";
-import Services from "@/components/Services";
+import LoveStories from "@/components/LoveStories";
+import OurCraft from "@/components/OurCraft";
 import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-noir-black text-white selection:bg-noir-gold selection:text-black">
+    <main className="min-h-screen bg-bg-deep text-text-light selection:bg-accent-rose selection:text-bg-deep">
       <Preloader />
-      <ScrollGallery />
-      <div className="relative z-50 bg-noir-black">
-        <Services />
+      <LoveStories />
+      <div className="relative z-50 bg-bg-deep">
+        <OurCraft />
         <Footer />
       </div>
     </main>
