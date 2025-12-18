@@ -1,0 +1,69 @@
+Project: Premium Cinematic Agency Portfolio Website Role: Senior Frontend Developer Goal: Build a high-performance, immersive portfolio website for a Creative Director & Video Editing Agency. The vibe must be "Dark," "Cinematic," and "Luxury."
+
+Tech Stack:
+
+HTML5
+
+CSS3 (Modern Flexbox & CSS Grid)
+
+JavaScript (Vanilla)
+
+Library: Use GSAP (GreenSock) via CDN for animations and ScrollTrigger.
+
+Design System:
+
+Background: Deep Rich Black (#0a0a0a)
+
+Text: White (#ffffff) and Light Grey (#888888)
+
+Accent: Muted Gold (#D4AF37) for hover states and thin lines.
+
+Typography: Large, condensed sans-serif headings (like 'Oswald' or 'Impact') for a movie-poster look. Clean sans-serif (like 'Inter') for body text.
+
+Structure & Features:
+
+Preloader:
+
+A simple black screen with the agency name fading in, then sliding up to reveal the site.
+
+Hero Section (Immersive):
+
+Full viewport height (100vh).
+
+Background: A high-quality placeholder image (from Unsplash) representing a cinematic scene.
+
+Text: Huge, bold typography centered or bottom-left (e.g., "WE CRAFT NARRATIVES").
+
+Animation: Use GSAP to create a parallax effect where the text moves at a different speed than the background on scroll.
+
+Portfolio Section (The "Grid"):
+
+Layout: A "Bento Box" or Masonry style grid (CSS Grid). Some items are square, some wide, some tall.
+
+Content: Use high-quality dark Unsplash images as placeholders.
+
+Interaction: On hover, the image should scale up slightly, and the project title should slide up from the bottom.
+
+Services Section (The "Accordion"):
+
+Layout: A vertical list of services (e.g., "Video Editing," "Creative Direction," "Color Grading").
+
+Style: Minimalist text rows separated by thin lines.
+
+Interaction: When hovering over a row, it should expand slightly or highlight in the Accent Gold color.
+
+Footer:
+
+Simple, centered text: "Let's Create."
+
+A large "Contact Us" button with a hover fill effect.
+
+Specific Instructions:
+
+Ensure the site is fully responsive (mobile-friendly).
+
+Use GSAP ScrollTrigger to fade elements in as the user scrolls down (staggered animations).
+
+Code should be clean, modular, and contained in index.html, style.css, and script.js.
+
+Use https://source.unsplash.com/random/1920x1080/?dark,cinema for placeholder images.
