@@ -1,0 +1,93 @@
+Here is the definitive "Senior Developer" Replit Prompt.
+
+This prompt is engineered to build a Single Page Application (SPA). It fulfills your requirement to have "everything on the main page" (seamless transitions) while still having Routes (e.g., /weddings, /contact) so you can send specific links to clients.
+
+Copy and paste everything below into the Replit AI Agent:
+
+Project: Cinematic Agency Portfolio (SPA) Role: Senior Creative Developer (Awwwards/Vogue Style) Tech Stack: React (Vite), Tailwind CSS, Framer Motion, React Router Dom, Lucide React.
+
+Goal: Build a high-performance, single-page cinematography portfolio. The site must feel like one continuous "Movie App" rather than a traditional website. Navigating between pages should trigger smooth, cinematic transitions (fade/slide) without browser reloads.
+
+Design System (Dark Luxury):
+
+Background: bg-neutral-900 (Soft Charcoal/Midnight).
+
+Text: text-neutral-200 (Off-white).
+
+Accent: text-rose-200 or text-amber-100 (Champagne/Gold).
+
+Typography:
+
+Headings: font-serif (Use Google Font "Playfair Display" via import).
+
+UI/Body: font-sans (Use Google Font "Inter" or "Manrope").
+
+Architecture & Routing:
+
+Use react-router-dom for navigation (/, /services, /work, /contact).
+
+Wrap Routes in Framer Motion’s <AnimatePresence mode="wait"> to ensure pages fade out smoothly before the new one fades in.
+
+Persistent Layout: The Navbar and a subtle "Noise/Grain" overlay should persist across all pages.
+
+PAGES & COMPONENTS:
+
+1. Home Page (/) - The "Love Stories" Slider:
+
+Core Feature: A Scroll-Driven Horizontal Gallery.
+
+Logic: As the user scrolls vertically, the gallery moves horizontally.
+
+The "Pop-Out" Effect:
+
+Use useTransform to track image position.
+
+Center Image: Scale 1.25, Opacity 100%, Full Color.
+
+Side Images: Scale 0.9, Opacity 40%, Filter grayscale(100%).
+
+Overlay: Display the Couple’s Name (Serif) and Location (Sans) in the bottom-left corner, changing dynamically as the center image changes.
+
+2. Services Page (/services) - The Split Screen:
+
+Layout: A 50/50 vertical split.
+
+Left Side ("Weddings"): Background image of a bride/ritual. Text: "Emotion, Narrative, Legacy."
+
+Right Side ("Commercial"): Background image of a studio set/product. Text: "Precision, Brand, Impact."
+
+Interaction: Hovering one side expands it to 70% width and dims the other side.
+
+3. Contact Page (/contact):
+
+Minimalist luxury.
+
+Large centered text: "Let's Create Your Masterpiece."
+
+A clean form (Name, Date, Budget) with a transparent background and simple white underlines.
+
+4. Navigation (Fixed Overlay):
+
+Logo (Top Left): "AGENCY." (Serif).
+
+Menu (Top Right): Links to Work, Services, Contact.
+
+Style: mix-blend-difference so it stays visible against light or dark images.
+
+Implementation Details:
+
+Create a data.js file for all project data (id, title, category, image URL). Use high-quality Unsplash placeholders (keywords: indian wedding, cinematic, dark fashion).
+
+Custom Cursor: A small circle that trails the mouse.
+
+Mobile Responsiveness: The horizontal slider should convert to a vertical scroll snap on mobile devices for better usability.
+
+Output: Generate the full file structure. Specifically:
+
+App.jsx (Routing & AnimatePresence setup).
+
+components/Home.jsx (The complex slider logic).
+
+components/Services.jsx (The split screen).
+
+index.css (Tailwind imports & Font setup).
