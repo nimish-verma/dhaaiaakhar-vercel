@@ -1,25 +1,18 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 export default function Preloader() {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLHeadingElement>(null);
-
-  useEffect(() => {
-    // Lock scroll on mount
-    document.body.style.overflow = "hidden";
-    
-    // Cleanup function in case component unmounts prematurely
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, []);
+  const [isVisible, setIsVisible] = useState(true);
 
   useGSAP(() => {
+    if (!isVisible) return;
+
     const tl = gsap.timeline({
       onComplete: () => {
-        // Unlock scroll when animation completes
+        setIsVisible(false);
         document.body.style.overflow = "auto";
       }
     });
@@ -41,6 +34,10 @@ export default function Preloader() {
       ease: "power4.inOut",
     });
   }, { scope: containerRef });
+
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <div 

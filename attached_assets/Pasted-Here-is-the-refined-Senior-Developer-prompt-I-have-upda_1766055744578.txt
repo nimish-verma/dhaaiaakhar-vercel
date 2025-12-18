@@ -1,0 +1,74 @@
+Here is the refined "Senior Developer" prompt.
+
+I have updated the "Hero/Gallery" section to specifically request the Scroll-Linked Horizontal Slider you described. I included technical instructions for the AI to map the vertical scroll (scrollY) to the horizontal movement (translateX) and added logic for the "Center Pop-out" effect using Framer Motion's useTransform.
+
+The Refined Replit Prompt
+Copy and paste this into the Replit AI Agent:
+
+Project: Interactive Cinematic Agency Portfolio Tech Stack: React (Vite), Tailwind CSS, Framer Motion Role: Senior Creative Developer (Awwwards-level style)
+
+Goal: Build a single-page interactive portfolio with a "Dark & Luxurious" aesthetic. The core feature is a Scroll-Driven Horizontal Gallery that dominates the main view.
+
+Core Dependencies to Install:
+
+framer-motion (Essential for the scroll-linked animations)
+
+react-intersection-observer
+
+lucide-react
+
+clsx and tailwind-merge (For class management)
+
+Design System & Styling:
+
+Background: bg-neutral-950 (Deep Black)
+
+Text: text-neutral-200
+
+Accent: text-yellow-600 (Gold)
+
+Font: Large, condensed sans-serif (Oswald/Impact style) for headers.
+
+KEY COMPONENT: The Scroll-Driven Hero Gallery
+
+Interaction: The main visual element is a horizontal strip of large project images.
+
+Scroll Logic:
+
+The section should have a tall scroll container (e.g., 300vh) but the gallery itself should be sticky and fixed to the viewport.
+
+Mapping: As the user scrolls DOWN vertically, the gallery smoothly slides Horizontally.
+
+The "Pop-Out" Effect:
+
+As images pass through the center of the screen, they must visually "pop out."
+
+Center Image: Scale: 1.2, Opacity: 100%, Z-index: 10.
+
+Side Images: Scale: 0.85, Opacity: 40%, Filter: Grayscale(100%).
+
+Use Framer Motion's useTransform to interpolate scale/opacity based on the image's x-position relative to the viewport center.
+
+Other Components:
+
+Custom Cursor: A small circle that trails the mouse and blends (mix-blend-difference) with the dark background.
+
+Overlay UI:
+
+Fixed Navigation (Logo Top Left, Menu Top Right).
+
+Project Title: As the center image changes, the Project Title text (positioned absolute bottom-left) should cross-fade to match the active image.
+
+Services Section (Below Gallery):
+
+A standard vertical accordion for services (Editing, Direction) that appears after the gallery finishes scrolling.
+
+Implementation Details:
+
+Create a data.js file for the portfolio items (Image URL, Title, Category).
+
+Ensure the transitions are fluid (physics-based), not linear or robotic.
+
+Use https://source.unsplash.com/random/1600x900/?dark,cinema for high-res placeholders.
+
+Output: Please generate the full project structure, specifically the App.jsx with the complex scroll logic and index.css.

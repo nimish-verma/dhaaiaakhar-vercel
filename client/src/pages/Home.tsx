@@ -1,6 +1,5 @@
 import Preloader from "@/components/Preloader";
-import Hero from "@/components/Hero";
-import Portfolio from "@/components/Portfolio";
+import ScrollGallery from "@/components/ScrollGallery";
 import Services from "@/components/Services";
 import Footer from "@/components/Footer";
 
@@ -8,10 +7,11 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-noir-black text-white selection:bg-noir-gold selection:text-black">
       <Preloader />
-      <Hero />
-      <Portfolio />
-      <Services />
-      <Footer />
+      <ScrollGallery />
+      <div className="relative z-50 bg-noir-black">
+        <Services />
+        <Footer />
+      </div>
     </main>
   );
 }
