@@ -1,3 +1,9 @@
+import img1 from "@assets/generated_images/urban_decay_architecture_dark_concrete.png";
+import img2 from "@assets/generated_images/luxury_gold_product_photography.png";
+import img3 from "@assets/generated_images/executive_workspace_dark_minimalist.png";
+import img4 from "@assets/generated_images/neon_night_car_fast_motion.png";
+import img5 from "@assets/generated_images/abstract_motion_light_trails_digital.png";
+
 export interface PortfolioItem {
   id: string;
   title: string;
@@ -10,30 +16,30 @@ export const portfolioItems: PortfolioItem[] = [
     id: "1",
     title: "Urban Decay",
     category: "Architecture",
-    image: "https://source.unsplash.com/random/1600x900/?dark,architecture,concrete",
+    image: img1,
   },
   {
     id: "2",
     title: "Luxury Frames",
     category: "Product",
-    image: "https://source.unsplash.com/random/1600x900/?dark,luxury,gold",
+    image: img2,
   },
   {
     id: "3",
     title: "Executive Vision",
     category: "Brand Identity",
-    image: "https://source.unsplash.com/random/1600x900/?dark,minimal,workspace",
+    image: img3,
   },
   {
     id: "4",
     title: "Neon Nights",
     category: "Automotive",
-    image: "https://source.unsplash.com/random/1600x900/?dark,car,neon",
+    image: img4,
   },
   {
     id: "5",
     title: "Temporal Flux",
     category: "Motion Graphics",
-    image: "https://source.unsplash.com/random/1600x900/?dark,abstract,light",
+    image: img5,
   },
 ];
