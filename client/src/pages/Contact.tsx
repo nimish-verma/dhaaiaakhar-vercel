@@ -17,11 +17,11 @@ export default function Contact() {
         {/* Hero Section */}
         <div className="h-screen flex items-center justify-center">
           <div className="text-center max-w-2xl mx-auto px-6">
-            <h1 className="text-7xl md:text-9xl font-playfair font-light text-text-light mb-8 uppercase">
-              Let's Create
+            <h1 className="text-6xl md:text-8xl font-playfair font-light text-text-light mb-4 uppercase">
+              Let's Tell Your Story
             </h1>
             <p className="text-2xl text-text-muted font-light mb-16">
-              Your Masterpiece
+              Dhaiaakar
             </p>
 
             {/* Contact Form */}
@@ -85,8 +85,8 @@ export default function Contact() {
               <p className="text-sm text-text-muted uppercase tracking-widest font-light">
                 Or reach out directly
               </p>
-              <a href="mailto:hello@cinema.com" className="text-xl text-accent-rose hover:text-white transition-colors mt-4 block font-light">
-                hello@cinema.com
+              <a href="mailto:hello@dhaiaakar.com" className="text-xl text-accent-rose hover:text-white transition-colors mt-4 block font-light">
+                hello@dhaiaakar.com
               </a>
             </div>
           </div>

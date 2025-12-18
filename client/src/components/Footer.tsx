@@ -10,10 +10,10 @@ export default function Footer() {
           Ready to tell your story?
         </p>
         <h2 className="mb-12 text-6xl md:text-8xl font-playfair font-light uppercase">
-          Get in Touch
+          Dhaiaakar
         </h2>
         
-        <a href="mailto:hello@cinema.com" className="group relative overflow-hidden rounded-full border border-white/30 bg-transparent px-12 py-4 text-lg uppercase tracking-widest transition-all hover:border-accent-rose hover:text-bg-deep cursor-pointer">
+        <a href="mailto:hello@dhaiaakar.com" className="group relative overflow-hidden rounded-full border border-white/30 bg-transparent px-12 py-4 text-lg uppercase tracking-widest transition-all hover:border-accent-rose hover:text-bg-deep cursor-pointer">
           <span className="relative z-10 transition-colors duration-300 group-hover:text-bg-deep font-light">Contact</span>
           <div className="absolute inset-0 z-0 h-full w-full translate-y-full bg-accent-rose transition-transform duration-300 ease-in-out group-hover:translate-y-0" />
         </a>
@@ -25,7 +25,7 @@ export default function Footer() {
           <a href="#" className="hover:text-accent-rose transition-colors font-light">Vimeo</a>
           <a href="#" className="hover:text-accent-rose transition-colors font-light">Contact</a>
         </div>
-        <p className="font-light">© 2025 CINÉMA. All Rights Reserved.</p>
+        <p className="font-light">© 2025 Dhaiaakar. All Rights Reserved.</p>
       </div>
     </footer>
   );

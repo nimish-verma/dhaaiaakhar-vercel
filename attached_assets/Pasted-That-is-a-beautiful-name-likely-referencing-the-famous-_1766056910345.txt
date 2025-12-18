@@ -1,0 +1,74 @@
+That is a beautiful name—likely referencing the famous Kabir couplet ("Dhai aakhar prem ka..."). It adds a deep, poetic layer to a wedding agency that fits perfectly with the "Cinematic/Storytelling" vibe.
+
+Here is the Updated Replit Prompt. I have injected "DHAIAAKAR" into the branding instructions and tuned the typography settings to make sure this specific name looks premium (using wide letter spacing).
+
+The "Dhaiaakar" Replit Prompt
+Copy and paste this into the Replit AI Agent:
+
+Project: Dhaiaakar - Cinematic Wedding Agency Portfolio Role: Senior Creative Developer Tech Stack: React (Vite), Tailwind CSS, Framer Motion, React Router Dom.
+
+Goal: Build a single-page interactive portfolio for "Dhaiaakar." The site must reflect the name's poetic nature—soulful, cinematic, and deep.
+
+Brand Identity:
+
+Name: DHAIAAKAR (Display this in the Navbar).
+
+Vibe: "Two and a half letters of Love." The design should feel timeless and emotional.
+
+Typography:
+
+Logo: font-serif (Playfair Display), All-Caps, Tracking-Widest (e.g., D H A I A A K A R).
+
+Headings: Elegant Serif.
+
+Body: Clean Sans-Serif.
+
+Architecture & Routing:
+
+Use react-router-dom with AnimatePresence for smooth page transitions.
+
+Routes: / (Home), /films (Work), /services (Offerings), /contact.
+
+PAGES & COMPONENTS:
+
+1. Home Page (The "Love Stories" Slider):
+
+Core Feature: Scroll-Driven Horizontal Gallery.
+
+Behavior: Vertical scroll moves the gallery horizontally.
+
+Visuals: Center image pops out (Color + Scale Up). Side images are Grayscale.
+
+Dynamic Overlay:
+
+Bottom Left: "Aditi & Vihaan" (Serif).
+
+Bottom Right: "Udaipur • 2025" (Sans).
+
+2. Services Page (Weddings vs. Commercial):
+
+Split Layout: 50% / 50%.
+
+Left: "WEDDING" (Dhaiaakar - The Love Story).
+
+Right: "COMMERCIAL" (Dhaiaakar - The Brand Story).
+
+Hover: Expanding panels.
+
+3. Navigation (Fixed):
+
+Top Left: "DHAIAAKAR" (Gold/Champagne color).
+
+Top Right: Minimal Menu Links.
+
+Background: Transparent (mix-blend-difference).
+
+Implementation Details:
+
+Update the HTML <title> to "Dhaiaakar | Cinematic Wedding Films".
+
+Create data.js with placeholders for Indian Weddings (use Unsplash keywords: Indian bride, Mehendi, Royal Wedding).
+
+Ensure the animations are slow and "heavy" (cinematic physics).
+
+Output: Generate App.jsx, components/Home.jsx, components/Navbar.jsx, and index.css.

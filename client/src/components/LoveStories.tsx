@@ -7,7 +7,6 @@ export default function LoveStories() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollYProgress = useMotionValue(0);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   // Map scroll progress to horizontal translation with heavier friction
   const xTranslate = useTransform(scrollYProgress, [0, 1], [0, -weddingStories.length * 650]);
@@ -38,10 +37,6 @@ export default function LoveStories() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [scrollYProgress]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    setMousePos({ x: e.clientX, y: e.clientY });
-  };
-
   return (
     <div className="relative">
       {/* Scroll spacer */}
@@ -52,18 +47,12 @@ export default function LoveStories() {
         ref={containerRef}
         className="fixed top-0 left-0 right-0 h-screen bg-bg-deep overflow-hidden flex items-center"
         style={{ zIndex: 40 }}
-        onMouseMove={handleMouseMove}
       >
-        {/* Navigation & Branding */}
-        <div className="absolute top-8 left-8 right-8 z-50 flex items-center justify-between pointer-events-auto">
-          <h2 className="text-xl font-playfair font-light text-text-light uppercase tracking-widest">
-            CINÉMA
-          </h2>
-          <nav className="flex gap-8 text-xs font-inter text-text-muted uppercase tracking-widest">
-            <a href="#work" className="hover:text-accent-rose transition-colors">Stories</a>
-            <a href="#services" className="hover:text-accent-rose transition-colors">Our Craft</a>
-            <a href="#contact" className="hover:text-accent-rose transition-colors">Contact</a>
-          </nav>
+        {/* Tagline */}
+        <div className="absolute top-32 left-8 right-8 z-50 text-center">
+          <p className="text-sm font-inter text-text-muted uppercase tracking-widest font-light">
+            Two and a Half Letters of Love
+          </p>
         </div>
 
         {/* Gallery */}

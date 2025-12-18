@@ -33,10 +33,10 @@ export default function Services() {
         <div className="h-screen flex items-center justify-center border-b border-white/10">
           <div className="text-center">
             <h1 className="text-7xl md:text-9xl font-playfair font-light text-text-light mb-6 uppercase">
-              Our Services
+              Services
             </h1>
             <p className="text-xl text-text-muted max-w-2xl mx-auto font-light">
-              Tailored cinematography solutions for weddings and commercial projects
+              Dhaiaakar offers specialized cinematography for weddings and brands
             </p>
           </div>
         </div>
@@ -54,10 +54,10 @@ export default function Services() {
             
             <div className="absolute inset-0 flex flex-col justify-center items-center p-8 text-center">
               <h2 className="text-5xl font-playfair font-light text-white mb-6 uppercase">
-                Weddings
+                Wedding
               </h2>
               <p className="text-xl text-white/80 mb-8 font-light max-w-md">
-                Emotion, Narrative, Legacy
+                The Love Story
               </p>
               
               {activeTab === "weddings" && (
@@ -88,7 +88,7 @@ export default function Services() {
                 Commercial
               </h2>
               <p className="text-xl text-white/80 mb-8 font-light max-w-md">
-                Precision, Brand, Impact
+                The Brand Story
               </p>
               
               {activeTab === "commercial" && (
