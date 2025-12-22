@@ -56,7 +56,7 @@ export default function LoveStories() {
         style={{ zIndex: 40 }}
       >
         {/* Tagline */}
-        <div className="absolute top-32 left-8 right-8 z-50 text-center">
+        <div className="absolute top-28 left-8 right-8 z-50 text-center">
           <p className={`text-sm font-inter ${mutedColor} uppercase tracking-widest font-light`}>
             Two and a Half Letters of Love
           </p>
