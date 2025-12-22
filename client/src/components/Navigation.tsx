@@ -6,10 +6,13 @@ export default function Navigation() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-8 py-6 pointer-events-auto mix-blend-difference">
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-6 pointer-events-auto" style={{
+      backgroundColor: theme === "dark" ? "rgba(26, 26, 26, 0.95)" : "rgba(245, 245, 245, 0.95)",
+      backdropFilter: "blur(10px)",
+    }}>
       <div className="flex items-center gap-6">
         <Link to="/" className="text-2xl font-playfair font-light uppercase tracking-[0.2em] hover:opacity-80 transition-opacity" style={{
-          color: theme === "dark" ? "#d4a5a5" : "#d4a5a5"
+          color: "#d4a5a5"
         }}>
           Dhaiaakar
         </Link>
@@ -31,7 +34,7 @@ export default function Navigation() {
         </button>
       </div>
       
-      <div className="flex gap-6 text-xs font-inter text-white uppercase tracking-widest" style={{
+      <div className="flex gap-6 text-xs font-inter uppercase tracking-widest" style={{
         color: theme === "dark" ? "white" : "#1a1a1a"
       }}>
         <Link to="/films" className="hover:opacity-70 transition-opacity">Films</Link>

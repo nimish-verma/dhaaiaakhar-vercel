@@ -11,8 +11,13 @@ export default function LoveStories() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const { theme } = useTheme();
 
-  // Map scroll progress to horizontal translation with heavier friction
-  const xTranslate = useTransform(scrollYProgress, [0, 1], [0, -weddingStories.length * 580]);
+  // Calculate total scroll distance needed for all 5 videos
+  const totalVideos = weddingStories.length;
+  const videoWidth = 580; // width of each video frame + gap
+  const totalScrollDistance = totalVideos * videoWidth;
+
+  // Map scroll progress to horizontal translation
+  const xTranslate = useTransform(scrollYProgress, [0, 1], [0, -totalScrollDistance]);
 
   useEffect(() => {
     let ticking = false;
@@ -26,8 +31,8 @@ export default function LoveStories() {
           scrollYProgress.set(scrollProgress);
 
           const activeIdx = Math.min(
-            Math.floor(scrollProgress * weddingStories.length),
-            weddingStories.length - 1
+            Math.floor(scrollProgress * totalVideos),
+            totalVideos - 1
           );
           setActiveIndex(activeIdx);
           ticking = false;
@@ -38,7 +43,7 @@ export default function LoveStories() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [scrollYProgress]);
+  }, [scrollYProgress, totalVideos]);
 
   const bgColor = theme === "dark" ? "bg-bg-deep" : "bg-light-bg";
   const textColor = theme === "dark" ? "text-text-light" : "text-light-text";
@@ -47,8 +52,8 @@ export default function LoveStories() {
 
   return (
     <div className="relative">
-      {/* Scroll spacer */}
-      <div className={`h-[300vh] ${bgColor}`} />
+      {/* Scroll spacer - adjusted for 5 videos */}
+      <div className={`h-[500vh] ${bgColor}`} />
 
       {/* Sticky gallery container */}
       <div
@@ -156,7 +161,7 @@ export default function LoveStories() {
             ))}
           </div>
           <span className={`text-xs ${mutedColor} font-inter uppercase tracking-widest`}>
-            {String(activeIndex + 1).padStart(2, "0")} / {String(weddingStories.length).padStart(2, "0")}
+            {String(activeIndex + 1).padStart(2, "0")} / {String(totalVideos).padStart(2, "0")}
           </span>
         </div>
       </div>
