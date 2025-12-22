@@ -1,15 +1,16 @@
-import img1 from "@assets/generated_images/bride_groom_luxury_wedding_ceremony.png";
-import img2 from "@assets/generated_images/bride_portrait_elegant_wedding_dress.png";
-import img3 from "@assets/generated_images/wedding_reception_dance_romantic.png";
-import img4 from "@assets/generated_images/groom_portrait_luxury_suit_detail.png";
-import img5 from "@assets/generated_images/wedding_venue_setup_luxury_decoration.png";
+import img1Day from "@assets/generated_images/bride_groom_luxury_wedding_ceremony.png";
+import img2Day from "@assets/generated_images/bride_portrait_elegant_wedding_dress.png";
+import img3Day from "@assets/generated_images/wedding_reception_dance_romantic.png";
+import img4Day from "@assets/generated_images/groom_portrait_luxury_suit_detail.png";
+import img5Day from "@assets/generated_images/wedding_venue_setup_luxury_decoration.png";
 
 export interface WeddingStory {
   id: string;
   coupleNames: string;
   location: string;
   date: string;
-  image: string;
+  imageDay: string;
+  imageNight: string;
   category: string;
 }
 
@@ -19,7 +20,8 @@ export const weddingStories: WeddingStory[] = [
     coupleNames: "Aditi & Vihaan",
     location: "Udaipur, India",
     date: "Dec 2024",
-    image: img1,
+    imageDay: img1Day,
+    imageNight: img1Day, // Will be replaced with night image
     category: "The Royal Wedding",
   },
   {
@@ -27,7 +29,8 @@ export const weddingStories: WeddingStory[] = [
     coupleNames: "Priya & Arjun",
     location: "Jaipur, India",
     date: "Jun 2024",
-    image: img2,
+    imageDay: img2Day,
+    imageNight: img2Day, // Will be replaced with night image
     category: "City Palace Romance",
   },
   {
@@ -35,7 +38,8 @@ export const weddingStories: WeddingStory[] = [
     coupleNames: "Ananya & Rohan",
     location: "Delhi, India",
     date: "Sep 2024",
-    image: img3,
+    imageDay: img3Day,
+    imageNight: img3Day, // Will be replaced with night image
     category: "Metropolitan Elegance",
   },
   {
@@ -43,7 +47,8 @@ export const weddingStories: WeddingStory[] = [
     coupleNames: "Divya & Aditya",
     location: "Goa, India",
     date: "May 2024",
-    image: img4,
+    imageDay: img4Day,
+    imageNight: img4Day, // Will be replaced with night image
     category: "Coastal Paradise",
   },
   {
@@ -51,7 +56,8 @@ export const weddingStories: WeddingStory[] = [
     coupleNames: "Meera & Harsh",
     location: "Kerala, India",
     date: "Nov 2024",
-    image: img5,
+    imageDay: img5Day,
+    imageNight: img5Day, // Will be replaced with night image
     category: "Backwater Dreams",
   },
 ];

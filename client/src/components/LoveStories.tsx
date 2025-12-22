@@ -1,12 +1,14 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { weddingStories } from "@/data/weddingData";
+import { useTheme } from "@/context/ThemeContext";
 import { Play } from "lucide-react";
 
 export default function LoveStories() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollYProgress = useMotionValue(0);
   const [activeIndex, setActiveIndex] = useState(0);
+  const { theme } = useTheme();
 
   // Map scroll progress to horizontal translation with heavier friction
   const xTranslate = useTransform(scrollYProgress, [0, 1], [0, -weddingStories.length * 650]);
@@ -37,20 +39,25 @@ export default function LoveStories() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [scrollYProgress]);
 
+  const bgColor = theme === "dark" ? "bg-bg-deep" : "bg-light-bg";
+  const textColor = theme === "dark" ? "text-text-light" : "text-light-text";
+  const mutedColor = theme === "dark" ? "text-text-muted" : "text-light-muted";
+  const accentColor = theme === "dark" ? "#d4a5a5" : "#d4a5a5";
+
   return (
     <div className="relative">
       {/* Scroll spacer */}
-      <div className="h-[300vh] bg-bg-deep" />
+      <div className={`h-[300vh] ${bgColor}`} />
 
       {/* Sticky gallery container */}
       <div
         ref={containerRef}
-        className="fixed top-0 left-0 right-0 h-screen bg-bg-deep overflow-hidden flex items-center"
+        className={`fixed top-0 left-0 right-0 h-screen ${bgColor} overflow-hidden flex items-center`}
         style={{ zIndex: 40 }}
       >
         {/* Tagline */}
         <div className="absolute top-32 left-8 right-8 z-50 text-center">
-          <p className="text-sm font-inter text-text-muted uppercase tracking-widest font-light">
+          <p className={`text-sm font-inter ${mutedColor} uppercase tracking-widest font-light`}>
             Two and a Half Letters of Love
           </p>
         </div>
@@ -62,6 +69,7 @@ export default function LoveStories() {
         >
           {weddingStories.map((story, index) => {
             const isCenter = index === activeIndex;
+            const image = theme === "dark" ? story.imageDay : story.imageNight;
 
             return (
               <motion.div
@@ -77,9 +85,9 @@ export default function LoveStories() {
               >
                 {/* Image */}
                 <img
-                  src={story.image}
+                  src={image}
                   alt={story.coupleNames}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover transition-all duration-500"
                   loading="lazy"
                 />
 
@@ -100,7 +108,7 @@ export default function LoveStories() {
                     <h3 className="text-5xl font-playfair font-light text-white mt-3">
                       {story.coupleNames}
                     </h3>
-                    <p className="text-sm text-text-muted mt-2">
+                    <p className="text-sm text-white/70 mt-2">
                       {story.location} • {story.date}
                     </p>
                   </motion.div>
@@ -127,16 +135,16 @@ export default function LoveStories() {
             {weddingStories.map((_, idx) => (
               <motion.div
                 key={idx}
-                className="h-1 bg-white/20 rounded-full"
+                className="h-1 rounded-full"
                 animate={{
                   width: idx === activeIndex ? 40 : 8,
-                  backgroundColor: idx === activeIndex ? "#d4a5a5" : "rgba(255,255,255,0.2)",
+                  backgroundColor: idx === activeIndex ? accentColor : "rgba(255,255,255,0.2)",
                 }}
                 transition={{ duration: 0.4 }}
               />
             ))}
           </div>
-          <span className="text-xs text-text-muted font-inter uppercase tracking-widest">
+          <span className={`text-xs ${mutedColor} font-inter uppercase tracking-widest`}>
             {String(activeIndex + 1).padStart(2, "0")} / {String(weddingStories.length).padStart(2, "0")}
           </span>
         </div>

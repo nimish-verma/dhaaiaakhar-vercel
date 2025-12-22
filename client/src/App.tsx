@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { queryClient } from "./lib/queryClient";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 import Navigation from "@/components/Navigation";
 import Preloader from "@/components/Preloader";
@@ -17,18 +18,20 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <Router>
-          <Navigation />
-          <Preloader />
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/films" element={<Films />} />
-              <Route path="/contact" element={<Contact />} />
-            </Routes>
-          </AnimatePresence>
-        </Router>
+        <ThemeProvider>
+          <Router>
+            <Navigation />
+            <Preloader />
+            <AnimatePresence mode="wait">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/films" element={<Films />} />
+                <Route path="/contact" element={<Contact />} />
+              </Routes>
+            </AnimatePresence>
+          </Router>
+        </ThemeProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

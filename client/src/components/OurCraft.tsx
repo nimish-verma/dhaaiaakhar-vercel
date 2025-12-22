@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { Check } from "lucide-react";
+import { useTheme } from "@/context/ThemeContext";
 
 const services = {
   weddings: [
@@ -27,6 +28,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function OurCraft() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
 
   useGSAP(() => {
     gsap.from(".craft-item", {
@@ -42,13 +44,18 @@ export default function OurCraft() {
     });
   }, { scope: containerRef });
 
+  const bgColor = theme === "dark" ? "bg-bg-deep" : "bg-light-bg";
+  const textColor = theme === "dark" ? "text-text-light" : "text-light-text";
+  const mutedColor = theme === "dark" ? "text-text-muted" : "text-light-muted";
+  const borderColor = theme === "dark" ? "border-white/10" : "border-black/10";
+
   return (
-    <section ref={containerRef} className="bg-bg-deep py-32 px-6 md:px-20 border-t border-white/10">
+    <section ref={containerRef} className={`${bgColor} py-32 px-6 md:px-20 border-t ${borderColor}`}>
       <div className="mb-24">
-        <h2 className="text-6xl md:text-8xl font-playfair font-light uppercase text-text-light mb-8">
+        <h2 className={`text-6xl md:text-8xl font-playfair font-light uppercase ${textColor} mb-8`}>
           Our Craft
         </h2>
-        <p className="text-xl text-text-muted max-w-2xl font-light">
+        <p className={`text-xl ${mutedColor} max-w-2xl font-light`}>
           We specialize in capturing moments that matter—whether it's the elegance of a wedding or the story of a brand.
         </p>
       </div>
@@ -56,15 +63,15 @@ export default function OurCraft() {
       <div className="grid md:grid-cols-2 gap-16">
         {/* Weddings */}
         <div className="craft-item">
-          <span className="text-xs font-inter font-semibold tracking-widest text-accent-rose uppercase">
+          <span className={`text-xs font-inter font-semibold tracking-widest text-accent-rose uppercase`}>
             Specialization
           </span>
-          <h3 className="text-4xl font-playfair font-light text-text-light mt-4 mb-8">
+          <h3 className={`text-4xl font-playfair font-light ${textColor} mt-4 mb-8`}>
             Weddings
           </h3>
           <ul className="space-y-4">
             {services.weddings.map((service, idx) => (
-              <li key={idx} className="flex items-start gap-4 text-text-muted">
+              <li key={idx} className={`flex items-start gap-4 ${mutedColor}`}>
                 <Check className="h-5 w-5 text-accent-rose flex-shrink-0 mt-0.5" />
                 <span className="font-light">{service}</span>
               </li>
@@ -74,15 +81,15 @@ export default function OurCraft() {
 
         {/* Commercial */}
         <div className="craft-item">
-          <span className="text-xs font-inter font-semibold tracking-widest text-accent-gold uppercase">
+          <span className={`text-xs font-inter font-semibold tracking-widest text-accent-gold uppercase`}>
             Specialization
           </span>
-          <h3 className="text-4xl font-playfair font-light text-text-light mt-4 mb-8">
+          <h3 className={`text-4xl font-playfair font-light ${textColor} mt-4 mb-8`}>
             Commercial
           </h3>
           <ul className="space-y-4">
             {services.commercial.map((service, idx) => (
-              <li key={idx} className="flex items-start gap-4 text-text-muted">
+              <li key={idx} className={`flex items-start gap-4 ${mutedColor}`}>
                 <Check className="h-5 w-5 text-accent-gold flex-shrink-0 mt-0.5" />
                 <span className="font-light">{service}</span>
               </li>

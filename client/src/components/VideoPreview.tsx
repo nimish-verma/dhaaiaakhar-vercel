@@ -5,11 +5,13 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { Play } from "lucide-react";
 import { weddingStories } from "@/data/weddingData";
+import { useTheme } from "@/context/ThemeContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function VideoPreview() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
   const topThree = weddingStories.slice(0, 3);
 
   useGSAP(() => {
@@ -26,58 +28,67 @@ export default function VideoPreview() {
     });
   }, { scope: containerRef });
 
+  const bgColor = theme === "dark" ? "bg-bg-deep" : "bg-light-bg";
+  const textColor = theme === "dark" ? "text-text-light" : "text-light-text";
+  const mutedColor = theme === "dark" ? "text-text-muted" : "text-light-muted";
+  const borderColor = theme === "dark" ? "border-white/10" : "border-black/10";
+
   return (
-    <section ref={containerRef} className="bg-bg-deep py-32 px-6 md:px-20 border-t border-white/10">
+    <section ref={containerRef} className={`${bgColor} py-32 px-6 md:px-20 border-t ${borderColor}`}>
       <div className="mb-24">
-        <h2 className="text-6xl md:text-8xl font-playfair font-light uppercase text-text-light mb-8">
+        <h2 className={`text-6xl md:text-8xl font-playfair font-light uppercase ${textColor} mb-8`}>
           Featured Films
         </h2>
-        <p className="text-xl text-text-muted max-w-2xl font-light">
+        <p className={`text-xl ${mutedColor} max-w-2xl font-light`}>
           Watch our most recent cinematic wedding stories
         </p>
       </div>
 
       <div className="grid md:grid-cols-3 gap-8">
-        {topThree.map((story) => (
-          <div
-            key={story.id}
-            className="video-card group relative overflow-hidden rounded-sm cursor-pointer h-96"
-          >
-            {/* Image */}
-            <img
-              src={story.image}
-              alt={story.coupleNames}
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
+        {topThree.map((story) => {
+          const image = theme === "dark" ? story.imageDay : story.imageNight;
+          
+          return (
+            <div
+              key={story.id}
+              className="video-card group relative overflow-hidden rounded-sm cursor-pointer h-96"
+            >
+              {/* Image */}
+              <img
+                src={image}
+                alt={story.coupleNames}
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
 
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-opacity duration-300" />
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-opacity duration-300" />
 
-            {/* Play Button */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <motion.button
-                initial={{ opacity: 0.7, scale: 1 }}
-                whileHover={{ scale: 1.1, opacity: 1 }}
-                className="relative z-20 rounded-full border border-white/50 p-5 hover:border-accent-rose hover:bg-accent-rose/20 transition-all"
-              >
-                <Play className="h-8 w-8 text-white fill-white" />
-              </motion.button>
+              {/* Play Button */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <motion.button
+                  initial={{ opacity: 0.7, scale: 1 }}
+                  whileHover={{ scale: 1.1, opacity: 1 }}
+                  className="relative z-20 rounded-full border border-white/50 p-5 hover:border-accent-rose hover:bg-accent-rose/20 transition-all"
+                >
+                  <Play className="h-8 w-8 text-white fill-white" />
+                </motion.button>
+              </div>
+
+              {/* Info */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+                <span className="text-xs font-inter font-semibold tracking-widest text-accent-rose uppercase">
+                  {story.category}
+                </span>
+                <h3 className="text-2xl font-playfair font-light text-white mt-2">
+                  {story.coupleNames}
+                </h3>
+                <p className="text-xs text-white/70 mt-1">
+                  {story.location} • {story.date}
+                </p>
+              </div>
             </div>
-
-            {/* Info */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
-              <span className="text-xs font-inter font-semibold tracking-widest text-accent-rose uppercase">
-                {story.category}
-              </span>
-              <h3 className="text-2xl font-playfair font-light text-white mt-2">
-                {story.coupleNames}
-              </h3>
-              <p className="text-xs text-text-muted mt-1">
-                {story.location} • {story.date}
-              </p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

@@ -2,11 +2,13 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import PageTransition from "@/components/PageTransition";
 import Footer from "@/components/Footer";
+import { useTheme } from "@/context/ThemeContext";
 import img1 from "@assets/generated_images/bride_portrait_elegant_wedding_dress.png";
 import img2 from "@assets/generated_images/wedding_venue_setup_luxury_decoration.png";
 
 export default function Services() {
   const [activeTab, setActiveTab] = useState<"weddings" | "commercial">("weddings");
+  const { theme } = useTheme();
 
   const weddingServices = [
     "Cinematic Wedding Films",
@@ -26,16 +28,21 @@ export default function Services() {
     "Social Media Content",
   ];
 
+  const bgColor = theme === "dark" ? "bg-bg-deep" : "bg-light-bg";
+  const textColor = theme === "dark" ? "text-text-light" : "text-light-text";
+  const mutedColor = theme === "dark" ? "text-text-muted" : "text-light-muted";
+  const borderColor = theme === "dark" ? "border-white/10" : "border-black/10";
+
   return (
     <PageTransition>
-      <div className="min-h-screen bg-bg-deep pt-24">
+      <div className={`min-h-screen ${bgColor} pt-24`}>
         {/* Hero Section */}
-        <div className="h-screen flex items-center justify-center border-b border-white/10">
+        <div className={`h-screen flex items-center justify-center border-b ${borderColor}`}>
           <div className="text-center">
-            <h1 className="text-7xl md:text-9xl font-playfair font-light text-text-light mb-6 uppercase">
+            <h1 className={`text-7xl md:text-9xl font-playfair font-light ${textColor} mb-6 uppercase`}>
               Services
             </h1>
-            <p className="text-xl text-text-muted max-w-2xl mx-auto font-light">
+            <p className={`text-xl ${mutedColor} max-w-2xl mx-auto font-light`}>
               Dhaiaakar offers specialized cinematography for weddings and brands
             </p>
           </div>
@@ -64,7 +71,7 @@ export default function Services() {
                 <motion.ul
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="space-y-3 text-text-muted"
+                  className={`space-y-3 ${mutedColor}`}
                 >
                   {weddingServices.map((service, idx) => (
                     <li key={idx} className="text-sm">• {service}</li>
@@ -95,7 +102,7 @@ export default function Services() {
                 <motion.ul
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="space-y-3 text-text-muted"
+                  className={`space-y-3 ${mutedColor}`}
                 >
                   {commercialServices.map((service, idx) => (
                     <li key={idx} className="text-sm">• {service}</li>
