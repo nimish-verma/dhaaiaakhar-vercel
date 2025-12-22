@@ -36,28 +36,28 @@ export default function Films() {
 
   return (
     <PageTransition>
-      <div className={`min-h-screen ${bgColor} pt-32`}>
+      <div className={`min-h-screen ${bgColor} pt-20 md:pt-32`}>
         {/* Hero */}
-        <div className={`h-screen flex items-center justify-center border-b ${borderColor}`}>
+        <div className={`min-h-screen md:h-screen flex items-center justify-center border-b ${borderColor} px-4 md:px-0`}>
           <div className="text-center">
-            <h1 className={`text-7xl md:text-9xl font-playfair font-light ${textColor} mb-6 uppercase`}>
+            <h1 className={`text-4xl md:text-9xl font-playfair font-light ${textColor} mb-6 uppercase`}>
               Our Films
             </h1>
-            <p className={`text-xl ${mutedColor} max-w-2xl mx-auto font-light`}>
+            <p className={`text-base md:text-xl ${mutedColor} max-w-2xl mx-auto font-light px-4`}>
               Stories of love captured across continents
             </p>
           </div>
         </div>
 
         {/* Portfolio Grid */}
-        <div ref={containerRef} className="py-32 px-6 md:px-20">
-          <div className="grid md:grid-cols-2 gap-8">
+        <div ref={containerRef} className="py-12 md:py-32 px-4 md:px-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {weddingStories.map((story) => {
               const image = theme === "dark" ? story.imageDay : story.imageNight;
               
               return (
                 <div key={story.id} className="work-item group cursor-pointer overflow-hidden rounded-sm">
-                  <div className="relative h-96 overflow-hidden">
+                  <div className="relative h-64 md:h-96 overflow-hidden">
                     <img
                       src={image}
                       alt={story.coupleNames}
@@ -66,11 +66,11 @@ export default function Films() {
                     <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-opacity duration-300" />
                   </div>
                   
-                  <div className={`p-8 ${cardBg}`}>
+                  <div className={`p-6 md:p-8 ${cardBg}`}>
                     <span className="text-xs font-inter font-semibold tracking-widest text-accent-rose uppercase">
                       {story.category}
                     </span>
-                    <h3 className={`text-3xl font-playfair font-light ${cardText} mt-3`}>
+                    <h3 className={`text-2xl md:text-3xl font-playfair font-light ${cardText} mt-3`}>
                       {story.coupleNames}
                     </h3>
                     <p className={`text-sm ${mutedColor} mt-2`}>

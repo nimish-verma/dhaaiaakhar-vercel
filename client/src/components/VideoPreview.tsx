@@ -34,24 +34,24 @@ export default function VideoPreview() {
   const borderColor = theme === "dark" ? "border-white/10" : "border-black/10";
 
   return (
-    <section ref={containerRef} className={`${bgColor} py-32 px-6 md:px-20 border-t ${borderColor}`}>
-      <div className="mb-24">
-        <h2 className={`text-6xl md:text-8xl font-playfair font-light uppercase ${textColor} mb-8`}>
+    <section ref={containerRef} className={`${bgColor} py-16 md:py-32 px-4 md:px-20 border-t ${borderColor}`}>
+      <div className="mb-12 md:mb-24">
+        <h2 className={`text-4xl md:text-8xl font-playfair font-light uppercase ${textColor} mb-4 md:mb-8`}>
           Featured Films
         </h2>
-        <p className={`text-xl ${mutedColor} max-w-2xl font-light`}>
+        <p className={`text-lg md:text-xl ${mutedColor} max-w-2xl font-light`}>
           Watch our most recent cinematic wedding stories
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-3 gap-4 md:gap-8">
         {topThree.map((story) => {
           const image = theme === "dark" ? story.imageDay : story.imageNight;
           
           return (
             <div
               key={story.id}
-              className="video-card group relative overflow-hidden rounded-sm cursor-pointer h-96"
+              className="video-card group relative overflow-hidden rounded-sm cursor-pointer h-64 md:h-96"
             >
               {/* Image */}
               <img
@@ -68,21 +68,21 @@ export default function VideoPreview() {
                 <motion.button
                   initial={{ opacity: 0.7, scale: 1 }}
                   whileHover={{ scale: 1.1, opacity: 1 }}
-                  className="relative z-20 rounded-full border border-white/50 p-5 hover:border-accent-rose hover:bg-accent-rose/20 transition-all"
+                  className="relative z-20 rounded-full border border-white/50 p-4 md:p-5 hover:border-accent-rose hover:bg-accent-rose/20 transition-all"
                 >
-                  <Play className="h-8 w-8 text-white fill-white" />
+                  <Play className="h-6 md:h-8 w-6 md:w-8 text-white fill-white" />
                 </motion.button>
               </div>
 
               {/* Info */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-black/80 to-transparent">
                 <span className="text-xs font-inter font-semibold tracking-widest text-accent-rose uppercase">
                   {story.category}
                 </span>
-                <h3 className="text-2xl font-playfair font-light text-white mt-2">
+                <h3 className="text-xl md:text-2xl font-playfair font-light text-white mt-2">
                   {story.coupleNames}
                 </h3>
-                <p className="text-xs text-white/70 mt-1">
+                <p className="text-xs text-text-muted mt-1">
                   {story.location} • {story.date}
                 </p>
               </div>

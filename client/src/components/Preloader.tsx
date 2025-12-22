@@ -4,7 +4,6 @@ import { useGSAP } from "@gsap/react";
 
 export default function Preloader() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLHeadingElement>(null);
   const [isVisible, setIsVisible] = useState(true);
 
   useGSAP(() => {
@@ -17,21 +16,12 @@ export default function Preloader() {
       }
     });
 
-    tl.to(textRef.current, {
-      opacity: 1,
-      duration: 1.5,
-      ease: "power2.out",
-    })
-    .to(textRef.current, {
+    // Just fade out the preloader without any text
+    tl.to(containerRef.current, {
       opacity: 0,
-      duration: 1,
-      ease: "power2.in",
-      delay: 0.5,
-    })
-    .to(containerRef.current, {
-      yPercent: -100,
       duration: 1.2,
-      ease: "power4.inOut",
+      ease: "power2.out",
+      delay: 0.5,
     });
   }, { scope: containerRef });
 
@@ -42,14 +32,8 @@ export default function Preloader() {
   return (
     <div 
       ref={containerRef} 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-noir-black text-noir-white"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-bg-deep text-text-light"
     >
-      <h1 
-        ref={textRef} 
-        className="text-6xl md:text-9xl font-oswald font-bold tracking-tighter opacity-0 uppercase"
-      >
-        Noir Agency
-      </h1>
     </div>
   );
 }

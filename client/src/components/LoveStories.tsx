@@ -8,15 +8,23 @@ export default function LoveStories() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollYProgress = useMotionValue(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const { theme } = useTheme();
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Calculate total scroll distance needed for all 5 videos
   const totalVideos = weddingStories.length;
-  const videoWidth = 580;
+  const videoWidth = 500;
   const totalScrollDistance = totalVideos * videoWidth;
 
   // Map scroll progress to horizontal translation
-  const xTranslate = useTransform(scrollYProgress, [0, 1], [0, -totalScrollDistance]);
+  const xTranslate = useTransform(scrollYProgress, [0, 0.8], [0, -totalScrollDistance]);
 
   useEffect(() => {
     let ticking = false;
@@ -25,7 +33,8 @@ export default function LoveStories() {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-          const scrollProgress = Math.min(window.scrollY / scrollHeight, 1);
+          // Only map the first 80% of scroll to the gallery, leaving 20% for content below
+          const scrollProgress = Math.min(window.scrollY / scrollHeight, 0.8);
           
           scrollYProgress.set(scrollProgress);
           ticking = false;
@@ -42,9 +51,47 @@ export default function LoveStories() {
   const textColor = theme === "dark" ? "text-text-light" : "text-light-text";
   const mutedColor = theme === "dark" ? "text-text-muted" : "text-light-muted";
 
+  if (isMobile) {
+    return (
+      <div className={`relative ${bgColor}`}>
+        <div className={`h-screen ${bgColor}`} />
+        <div className={`${bgColor} px-4 py-16`}>
+          <div className="text-center mb-8">
+            <p className={`text-xs font-inter ${mutedColor} uppercase tracking-widest font-light mb-6`}>
+              Two and a Half Letters of Love
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-6">
+            {weddingStories.map((story) => {
+              const image = theme === "dark" ? story.imageDay : story.imageNight;
+              return (
+                <div
+                  key={story.id}
+                  className="relative h-80 w-full rounded-sm overflow-hidden cursor-pointer group"
+                  onMouseEnter={() => setHoveredIndex(parseInt(story.id))}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  <img
+                    src={image}
+                    alt={story.coupleNames}
+                    className="h-full w-full object-cover transition-all duration-500"
+                    style={{
+                      filter: "grayscale(100%)",
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-black/30" />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
-      {/* Scroll spacer */}
+      {/* Scroll spacer - allows scrolling beyond gallery */}
       <div className={`h-[700vh] ${bgColor}`} />
 
       {/* Sticky gallery container */}
