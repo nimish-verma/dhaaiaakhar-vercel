@@ -46,8 +46,14 @@
   * {
     @apply border-border;
   }
+  
+  html {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="%23d4a5a5" opacity="0.8"/><circle cx="12" cy="12" r="3" fill="%23d4a5a5"/></svg>') 12 12, auto;
+  }
+  
   body {
     @apply font-inter antialiased selection:bg-accent-rose selection:text-bg-deep transition-colors duration-300;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="%23d4a5a5" opacity="0.8"/><circle cx="12" cy="12" r="3" fill="%23d4a5a5"/></svg>') 12 12, auto;
   }
   
   /* Dark theme (default) */
@@ -62,6 +68,10 @@
   
   h1, h2, h3, h4, h5, h6 {
     @apply font-playfair;
+  }
+  
+  a, button {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="%23d4a5a5" opacity="0.8"/><circle cx="12" cy="12" r="3" fill="%23d4a5a5"/></svg>') 12 12, auto;
   }
 }
 

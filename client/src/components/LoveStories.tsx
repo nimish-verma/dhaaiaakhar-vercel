@@ -41,7 +41,6 @@ export default function LoveStories() {
   const bgColor = theme === "dark" ? "bg-bg-deep" : "bg-light-bg";
   const textColor = theme === "dark" ? "text-text-light" : "text-light-text";
   const mutedColor = theme === "dark" ? "text-text-muted" : "text-light-muted";
-  const accentColor = theme === "dark" ? "#d4a5a5" : "#d4a5a5";
 
   return (
     <div className="relative">
@@ -52,7 +51,7 @@ export default function LoveStories() {
       <div
         ref={containerRef}
         className={`fixed top-0 left-0 right-0 h-screen ${bgColor} overflow-hidden flex items-center`}
-        style={{ zIndex: 40, cursor: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\"><circle cx=\"10\" cy=\"10\" r=\"4\" fill=\"%23d4a5a5\" /></svg>') 10 10, auto" }}
+        style={{ zIndex: 40 }}
       >
         {/* Tagline */}
         <div className="absolute top-28 left-8 right-8 z-50 text-center">
@@ -73,7 +72,7 @@ export default function LoveStories() {
             return (
               <motion.div
                 key={story.id}
-                className="relative flex-shrink-0 h-[500px] w-[500px] rounded-sm overflow-hidden cursor-pointer group"
+                className="relative flex-shrink-0 h-[500px] w-[500px] rounded-sm overflow-hidden group"
                 animate={{
                   scale: isHovered ? 1.15 : 1,
                   opacity: 1,
@@ -82,9 +81,6 @@ export default function LoveStories() {
                 transition={{ type: "spring", stiffness: 200, damping: 30 }}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                style={{
-                  cursor: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\"><circle cx=\"10\" cy=\"10\" r=\"4\" fill=\"%23d4a5a5\" /></svg>') 10 10, auto"
-                }}
               >
                 {/* Image */}
                 <img
