@@ -7,7 +7,6 @@ import { Play } from "lucide-react";
 export default function LoveStories() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollYProgress = useMotionValue(0);
-  const [activeIndex, setActiveIndex] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const { theme } = useTheme();
 
@@ -29,16 +28,6 @@ export default function LoveStories() {
           const scrollProgress = Math.min(window.scrollY / scrollHeight, 1);
           
           scrollYProgress.set(scrollProgress);
-
-          // More granular calculation: divide scroll into equal sections for each video
-          const sectionSize = 1 / totalVideos;
-          let activeIdx = Math.floor(scrollProgress / sectionSize);
-          
-          // Ensure we stay within bounds
-          activeIdx = Math.min(activeIdx, totalVideos - 1);
-          activeIdx = Math.max(activeIdx, 0);
-          
-          setActiveIndex(activeIdx);
           ticking = false;
         });
         ticking = true;
@@ -47,7 +36,7 @@ export default function LoveStories() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [scrollYProgress, totalVideos]);
+  }, [scrollYProgress]);
 
   const bgColor = theme === "dark" ? "bg-bg-deep" : "bg-light-bg";
   const textColor = theme === "dark" ? "text-text-light" : "text-light-text";
@@ -56,14 +45,14 @@ export default function LoveStories() {
 
   return (
     <div className="relative">
-      {/* Scroll spacer - increased to 700vh for better video distribution */}
+      {/* Scroll spacer */}
       <div className={`h-[700vh] ${bgColor}`} />
 
       {/* Sticky gallery container */}
       <div
         ref={containerRef}
         className={`fixed top-0 left-0 right-0 h-screen ${bgColor} overflow-hidden flex items-center`}
-        style={{ zIndex: 40 }}
+        style={{ zIndex: 40, cursor: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\"><circle cx=\"10\" cy=\"10\" r=\"4\" fill=\"%23d4a5a5\" /></svg>') 10 10, auto" }}
       >
         {/* Tagline */}
         <div className="absolute top-28 left-8 right-8 z-50 text-center">
@@ -78,7 +67,6 @@ export default function LoveStories() {
           style={{ x: xTranslate }}
         >
           {weddingStories.map((story, index) => {
-            const isCenter = index === activeIndex;
             const isHovered = hoveredIndex === index;
             const image = theme === "dark" ? story.imageDay : story.imageNight;
 
@@ -87,13 +75,16 @@ export default function LoveStories() {
                 key={story.id}
                 className="relative flex-shrink-0 h-[500px] w-[500px] rounded-sm overflow-hidden cursor-pointer group"
                 animate={{
-                  scale: isCenter ? 1.15 : 0.85,
-                  opacity: isCenter ? 1 : 0.6,
-                  zIndex: isCenter ? 10 : 0,
+                  scale: isHovered ? 1.15 : 1,
+                  opacity: 1,
+                  zIndex: isHovered ? 10 : 0,
                 }}
                 transition={{ type: "spring", stiffness: 200, damping: 30 }}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
+                style={{
+                  cursor: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\"><circle cx=\"10\" cy=\"10\" r=\"4\" fill=\"%23d4a5a5\" /></svg>') 10 10, auto"
+                }}
               >
                 {/* Image */}
                 <img
@@ -101,7 +92,7 @@ export default function LoveStories() {
                   alt={story.coupleNames}
                   className="h-full w-full object-cover transition-all duration-500"
                   style={{
-                    filter: isHovered || isCenter ? "grayscale(0%)" : "grayscale(100%)",
+                    filter: isHovered ? "grayscale(0%)" : "grayscale(100%)",
                   }}
                   loading="lazy"
                 />
@@ -110,12 +101,12 @@ export default function LoveStories() {
                 <div 
                   className="absolute inset-0 bg-black/30 transition-opacity duration-300"
                   style={{
-                    opacity: isHovered || isCenter ? 0.2 : 0.4,
+                    opacity: isHovered ? 0.2 : 0.4,
                   }}
                 />
 
-                {/* Project info - visible on center */}
-                {(isCenter || isHovered) && (
+                {/* Project info - visible only on hover */}
+                {isHovered && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -134,8 +125,8 @@ export default function LoveStories() {
                   </motion.div>
                 )}
 
-                {/* Play button - visible on center or hover */}
-                {(isCenter || isHovered) && (
+                {/* Play button - visible only on hover */}
+                {isHovered && (
                   <motion.button
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -157,15 +148,15 @@ export default function LoveStories() {
                 key={idx}
                 className="h-1 rounded-full"
                 animate={{
-                  width: idx === activeIndex ? 40 : 8,
-                  backgroundColor: idx === activeIndex ? accentColor : "rgba(255,255,255,0.2)",
+                  width: 8,
+                  backgroundColor: "rgba(255,255,255,0.3)",
                 }}
                 transition={{ duration: 0.4 }}
               />
             ))}
           </div>
           <span className={`text-xs ${mutedColor} font-inter uppercase tracking-widest`}>
-            {String(activeIndex + 1).padStart(2, "0")} / {String(totalVideos).padStart(2, "0")}
+            Scroll to explore
           </span>
         </div>
       </div>
