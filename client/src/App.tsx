@@ -7,19 +7,44 @@ import { queryClient } from "./lib/queryClient";
 import { ThemeProvider } from "@/context/ThemeContext";
 
 import Navigation from "@/components/Navigation";
+import ScrollToTop from "@/components/ScrollToTop";
 import Preloader from "@/components/Preloader";
 import Home from "@/pages/Home";
 import Services from "@/pages/Services";
 import Films from "@/pages/Films";
 import Contact from "@/pages/Contact";
 
+import Lenis from "lenis";
+import { useEffect } from "react";
+
 function App() {
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      touchMultiplier: 2,
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <ThemeProvider>
           <Router>
+            <ScrollToTop />
             <Navigation />
             <Preloader />
             <AnimatePresence mode="wait">

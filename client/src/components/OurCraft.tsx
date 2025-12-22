@@ -1,7 +1,5 @@
 import { useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -24,78 +22,117 @@ const services = {
   ],
 };
 
-gsap.registerPlugin(ScrollTrigger);
-
 export default function OurCraft() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
-
-  useGSAP(() => {
-    gsap.from(".craft-item", {
-      y: 30,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.1,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 70%",
-      },
-    });
-  }, { scope: containerRef });
 
   const bgColor = theme === "dark" ? "bg-bg-deep" : "bg-light-bg";
   const textColor = theme === "dark" ? "text-text-light" : "text-light-text";
   const mutedColor = theme === "dark" ? "text-text-muted" : "text-light-muted";
   const borderColor = theme === "dark" ? "border-white/10" : "border-black/10";
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        duration: 0.8, 
+        ease: [0.33, 1, 0.68, 1] 
+      }
+    }
+  };
+
   return (
     <section ref={containerRef} className={`${bgColor} py-32 px-6 md:px-20 border-t ${borderColor}`}>
-      <div className="mb-24">
-        <h2 className={`text-6xl md:text-8xl font-playfair font-light uppercase ${textColor} mb-8`}>
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={containerVariants}
+        className="mb-24"
+      >
+        <motion.h2 
+          variants={itemVariants}
+          className={`text-6xl md:text-8xl font-playfair font-light uppercase ${textColor} mb-8`}
+        >
           Our Craft
-        </h2>
-        <p className={`text-xl ${mutedColor} max-w-2xl font-light`}>
+        </motion.h2>
+        <motion.p 
+          variants={itemVariants}
+          className={`text-xl ${mutedColor} max-w-2xl font-light`}
+        >
           We specialize in capturing moments that matter—whether it's the elegance of a wedding or the story of a brand.
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
 
       <div className="grid md:grid-cols-2 gap-16">
         {/* Weddings */}
-        <div className="craft-item">
-          <span className={`text-xs font-inter font-semibold tracking-widest text-accent-rose uppercase`}>
+        <motion.div 
+          className="craft-item"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={containerVariants}
+        >
+          <motion.span variants={itemVariants} className={`text-xs font-inter font-semibold tracking-widest text-accent-rose uppercase`}>
             Specialization
-          </span>
-          <h3 className={`text-4xl font-playfair font-light ${textColor} mt-4 mb-8`}>
+          </motion.span>
+          <motion.h3 variants={itemVariants} className={`text-4xl font-playfair font-light ${textColor} mt-4 mb-8`}>
             Weddings
-          </h3>
-          <ul className="space-y-4">
+          </motion.h3>
+          <motion.ul className="space-y-4" variants={containerVariants}>
             {services.weddings.map((service, idx) => (
-              <li key={idx} className={`flex items-start gap-4 ${mutedColor}`}>
+              <motion.li 
+                key={idx} 
+                variants={itemVariants}
+                className={`flex items-start gap-4 ${mutedColor}`}
+              >
                 <Check className="h-5 w-5 text-accent-rose flex-shrink-0 mt-0.5" />
                 <span className="font-light">{service}</span>
-              </li>
+              </motion.li>
             ))}
-          </ul>
-        </div>
+          </motion.ul>
+        </motion.div>
 
         {/* Commercial */}
-        <div className="craft-item">
-          <span className={`text-xs font-inter font-semibold tracking-widest text-accent-gold uppercase`}>
+        <motion.div 
+          className="craft-item"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={containerVariants}
+        >
+          <motion.span variants={itemVariants} className={`text-xs font-inter font-semibold tracking-widest text-accent-gold uppercase`}>
             Specialization
-          </span>
-          <h3 className={`text-4xl font-playfair font-light ${textColor} mt-4 mb-8`}>
+          </motion.span>
+          <motion.h3 variants={itemVariants} className={`text-4xl font-playfair font-light ${textColor} mt-4 mb-8`}>
             Commercial
-          </h3>
-          <ul className="space-y-4">
+          </motion.h3>
+          <motion.ul className="space-y-4" variants={containerVariants}>
             {services.commercial.map((service, idx) => (
-              <li key={idx} className={`flex items-start gap-4 ${mutedColor}`}>
+              <motion.li 
+                key={idx} 
+                variants={itemVariants}
+                className={`flex items-start gap-4 ${mutedColor}`}
+              >
                 <Check className="h-5 w-5 text-accent-gold flex-shrink-0 mt-0.5" />
                 <span className="font-light">{service}</span>
-              </li>
+              </motion.li>
             ))}
-          </ul>
-        </div>
+          </motion.ul>
+        </motion.div>
       </div>
     </section>
   );

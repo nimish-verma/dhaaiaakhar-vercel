@@ -1,51 +1,58 @@
 import { useRef, useState, useEffect } from "react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useTransform, useScroll, useSpring } from "framer-motion";
 import { weddingStories } from "@/data/weddingData";
 import { useTheme } from "@/context/ThemeContext";
 import { Play } from "lucide-react";
 
 export default function LoveStories() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const scrollYProgress = useMotionValue(0);
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const { scrollY } = useScroll();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [maxScroll, setMaxScroll] = useState(0);
+  const [spacerHeight, setSpacerHeight] = useState(2000);
   const { theme } = useTheme();
 
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  // Calculate total scroll distance needed for all 5 videos
-  const totalVideos = weddingStories.length;
-  const videoWidth = 500;
-  const totalScrollDistance = totalVideos * videoWidth;
-
-  // Map scroll progress to horizontal translation
-  const xTranslate = useTransform(scrollYProgress, [0, 0.8], [0, -totalScrollDistance]);
+  const [hasVerticalSpace, setHasVerticalSpace] = useState(true);
 
   useEffect(() => {
-    let ticking = false;
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      
+      // Vertical space check
+      const imageTop = window.innerHeight / 2 - 250;
+      setHasVerticalSpace(imageTop > 150);
 
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-          // Only map the first 80% of scroll to the gallery, leaving 20% for content below
-          const scrollProgress = Math.min(window.scrollY / scrollHeight, 0.8);
-          
-          scrollYProgress.set(scrollProgress);
-          ticking = false;
-        });
-        ticking = true;
+      // Horizontal scroll calculation
+      if (galleryRef.current) {
+        // Calculate the total scrollable width
+        const scrollWidth = galleryRef.current.scrollWidth;
+        const windowWidth = window.innerWidth;
+        // Distance needed to scroll to see the very end of content
+        const distance = Math.max(0, scrollWidth - windowWidth);
+        
+        setMaxScroll(distance);
+        setSpacerHeight(distance + window.innerHeight);
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [scrollYProgress]);
+    // Need a small delay to ensure DOM is ready and layout is stable
+    const timeout = setTimeout(handleResize, 100);
+    window.addEventListener("resize", handleResize);
+    
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  // Soften the scroll physics
+  const springConfig = { mass: 0.8, stiffness: 90, damping: 20 };
+  const smoothScrollY = useSpring(scrollY, springConfig);
+
+  // Map pixels scrolled to pixels translated horizontally
+  const xTranslate = useTransform(smoothScrollY, [0, maxScroll || 1], [0, -(maxScroll || 0)]);
 
   const bgColor = theme === "dark" ? "bg-bg-deep" : "bg-light-bg";
   const textColor = theme === "dark" ? "text-text-light" : "text-light-text";
@@ -54,36 +61,62 @@ export default function LoveStories() {
   if (isMobile) {
     return (
       <div className={`relative ${bgColor}`}>
-        <div className={`h-screen ${bgColor}`} />
-        <div className={`${bgColor} px-4 py-16`}>
-          <div className="text-center mb-8">
-            <p className={`text-xs font-inter ${mutedColor} uppercase tracking-widest font-light mb-6`}>
+        <div className={`h-screen ${bgColor} flex flex-col justify-center`}>
+          <div className="px-4 mb-4">
+             <motion.p 
+               initial={{ opacity: 0, y: 10 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               transition={{ duration: 0.6 }}
+               className={`text-xs font-inter ${mutedColor} uppercase tracking-widest font-light mb-2`}
+             >
               Two and a Half Letters of Love
-            </p>
+            </motion.p>
           </div>
-          <div className="grid grid-cols-1 gap-6">
+          
+           {/* Mobile Snap Scroll Gallery */}
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 pb-8 no-scrollbar touch-pan-x"
+          >
             {weddingStories.map((story) => {
               const image = theme === "dark" ? story.imageDay : story.imageNight;
               return (
                 <div
                   key={story.id}
-                  className="relative h-80 w-full rounded-sm overflow-hidden cursor-pointer group"
-                  onMouseEnter={() => setHoveredIndex(parseInt(story.id))}
-                  onMouseLeave={() => setHoveredIndex(null)}
+                  className="snap-center shrink-0 w-[85vw] relative aspect-[4/5] rounded-[10px] overflow-hidden"
                 >
                   <img
                     src={image}
                     alt={story.coupleNames}
-                    className="h-full w-full object-cover transition-all duration-500"
-                    style={{
-                      filter: "grayscale(100%)",
-                    }}
+                    className="h-full w-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-black/30" />
+                  <div className="absolute inset-0 bg-black/20" />
+                  
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <span className="text-xs font-inter font-semibold tracking-widest text-accent-rose uppercase">
+                       {story.category}
+                    </span>
+                    <h3 className="text-2xl font-playfair font-light text-white mt-1">
+                      {story.coupleNames}
+                    </h3>
+                  </div>
                 </div>
               );
             })}
-          </div>
+          </motion.div>
+          
+           <div className="px-4 text-center mt-2">
+             <motion.span 
+               initial={{ opacity: 0 }}
+               whileInView={{ opacity: 1 }}
+               transition={{ delay: 0.5, duration: 0.6 }}
+               className={`text-[10px] ${mutedColor} font-inter uppercase tracking-widest`}
+             >
+              Swipe to explore
+            </motion.span>
+           </div>
         </div>
       </div>
     );
@@ -92,7 +125,7 @@ export default function LoveStories() {
   return (
     <div className="relative">
       {/* Scroll spacer - allows scrolling beyond gallery */}
-      <div className={`h-[700vh] ${bgColor}`} />
+      <div style={{ height: `${spacerHeight}px` }} className={`${bgColor}`} />
 
       {/* Sticky gallery container */}
       <div
@@ -101,14 +134,20 @@ export default function LoveStories() {
         style={{ zIndex: 40 }}
       >
         {/* Tagline */}
-        <div className="absolute top-28 left-8 right-8 z-50 text-center">
+        <motion.div 
+          className="absolute top-28 left-8 right-8 z-50 text-center"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: hoveredIndex === null && hasVerticalSpace ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+        >
           <p className={`text-sm font-inter ${mutedColor} uppercase tracking-widest font-light`}>
             Two and a Half Letters of Love
           </p>
-        </div>
+        </motion.div>
 
         {/* Gallery */}
         <motion.div
+          ref={galleryRef}
           className="flex items-center gap-12 h-full px-20"
           style={{ x: xTranslate }}
         >
@@ -119,13 +158,13 @@ export default function LoveStories() {
             return (
               <motion.div
                 key={story.id}
-                className="relative flex-shrink-0 h-[500px] w-[500px] rounded-sm overflow-hidden group"
+                className="relative flex-shrink-0 h-[500px] w-[500px] rounded-[10px] overflow-hidden group"
                 animate={{
                   scale: isHovered ? 1.15 : 1,
                   opacity: 1,
                   zIndex: isHovered ? 10 : 0,
                 }}
-                transition={{ type: "spring", stiffness: 200, damping: 30 }}
+                transition={{ duration: 0.5, ease: [0.33, 1, 0.68, 1] }}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
@@ -185,16 +224,15 @@ export default function LoveStories() {
 
         {/* Bottom indicators */}
         <div className="absolute bottom-8 left-8 right-8 flex items-center justify-between z-50 pointer-events-none">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 pointer-events-auto">
             {weddingStories.map((_, idx) => (
-              <motion.div
+              <Indicator 
                 key={idx}
-                className="h-1 rounded-full"
-                animate={{
-                  width: 8,
-                  backgroundColor: "rgba(255,255,255,0.3)",
-                }}
-                transition={{ duration: 0.4 }}
+                scrollY={smoothScrollY}
+                index={idx}
+                total={weddingStories.length}
+                maxScroll={maxScroll}
+                theme={theme}
               />
             ))}
           </div>
@@ -204,5 +242,47 @@ export default function LoveStories() {
         </div>
       </div>
     </div>
+  );
+}
+
+function Indicator({ scrollY, index, total, maxScroll, theme }: { scrollY: any, index: number, total: number, maxScroll: number, theme: string }) {
+  const step = (maxScroll || 1) / Math.max(1, total - 1);
+  const target = index * step;
+  
+  const width = useTransform(
+    scrollY,
+    [target - step, target, target + step],
+    [8, 32, 8],
+    { clamp: true }
+  );
+  
+  const opacity = useTransform(
+    scrollY,
+    [target - step, target, target + step],
+    [0.3, 1, 0.3],
+    { clamp: true }
+  );
+
+  const activeColor = theme === "dark" ? "#ffffff" : "#1a1a1a";
+  const inactiveColor = theme === "dark" ? "rgba(255,255,255,0.3)" : "rgba(26, 26, 26, 0.3)";
+  
+  const backgroundColor = useTransform(
+    scrollY,
+    [target - step, target, target + step],
+    [inactiveColor, activeColor, inactiveColor],
+    { clamp: true }
+  );
+
+  return (
+    <motion.div
+      style={{
+        width,
+        backgroundColor,
+      }}
+      className="h-1 rounded-full cursor-pointer hover:h-1.5 transition-[height]"
+      onClick={() => {
+        window.scrollTo({ top: target, behavior: 'smooth' });
+      }}
+    />
   );
 }

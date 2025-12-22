@@ -1,32 +1,13 @@
 import { useRef } from "react";
 import { motion } from "framer-motion";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 import { Play } from "lucide-react";
 import { weddingStories } from "@/data/weddingData";
 import { useTheme } from "@/context/ThemeContext";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function VideoPreview() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
   const topThree = weddingStories.slice(0, 3);
-
-  useGSAP(() => {
-    gsap.from(".video-card", {
-      y: 50,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.15,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 70%",
-      },
-    });
-  }, { scope: containerRef });
 
   const bgColor = theme === "dark" ? "bg-bg-deep" : "bg-light-bg";
   const textColor = theme === "dark" ? "text-text-light" : "text-light-text";
@@ -35,23 +16,52 @@ export default function VideoPreview() {
 
   return (
     <section ref={containerRef} className={`${bgColor} py-16 md:py-32 px-4 md:px-20 border-t ${borderColor}`}>
-      <div className="mb-12 md:mb-24">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        viewport={{ once: true }}
+        className="mb-12 md:mb-24"
+      >
         <h2 className={`text-4xl md:text-8xl font-playfair font-light uppercase ${textColor} mb-4 md:mb-8`}>
           Featured Films
         </h2>
         <p className={`text-lg md:text-xl ${mutedColor} max-w-2xl font-light`}>
           Watch our most recent cinematic wedding stories
         </p>
-      </div>
+      </motion.div>
 
-      <div className="grid md:grid-cols-3 gap-4 md:gap-8">
+      <motion.div 
+        className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.2 }
+          }
+        }}
+      >
         {topThree.map((story) => {
           const image = theme === "dark" ? story.imageDay : story.imageNight;
           
           return (
-            <div
+            <motion.div
               key={story.id}
-              className="video-card group relative overflow-hidden rounded-sm cursor-pointer h-64 md:h-96"
+              className="video-card group relative overflow-hidden rounded-[10px] cursor-pointer h-64 md:h-96"
+              variants={{
+                hidden: { opacity: 0, y: 50 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.33, 1, 0.68, 1] } }
+              }}
+              whileHover={{ 
+                y: -10, 
+                scale: 1.02,
+                boxShadow: "0 20px 40px -10px rgba(0,0,0,0.3)",
+                zIndex: 10
+              }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
             >
               {/* Image */}
               <img
@@ -67,8 +77,9 @@ export default function VideoPreview() {
               <div className="absolute inset-0 flex items-center justify-center">
                 <motion.button
                   initial={{ opacity: 0.7, scale: 1 }}
-                  whileHover={{ scale: 1.1, opacity: 1 }}
-                  className="relative z-20 rounded-full border border-white/50 p-4 md:p-5 hover:border-accent-rose hover:bg-accent-rose/20 transition-all"
+                  whileHover={{ scale: 1.2, opacity: 1, filter: "drop-shadow(0 0 8px rgba(255,255,255,0.5))" }}
+                  transition={{ duration: 0.3 }}
+                  className="relative z-20 rounded-full border border-white/50 p-4 md:p-5 hover:border-accent-rose hover:bg-accent-rose/20"
                 >
                   <Play className="h-6 md:h-8 w-6 md:w-8 text-white fill-white" />
                 </motion.button>
@@ -86,10 +97,10 @@ export default function VideoPreview() {
                   {story.location} • {story.date}
                 </p>
               </div>
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     </section>
   );
 }
