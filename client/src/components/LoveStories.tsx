@@ -8,10 +8,11 @@ export default function LoveStories() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollYProgress = useMotionValue(0);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const { theme } = useTheme();
 
   // Map scroll progress to horizontal translation with heavier friction
-  const xTranslate = useTransform(scrollYProgress, [0, 1], [0, -weddingStories.length * 650]);
+  const xTranslate = useTransform(scrollYProgress, [0, 1], [0, -weddingStories.length * 580]);
 
   useEffect(() => {
     let ticking = false;
@@ -69,59 +70,69 @@ export default function LoveStories() {
         >
           {weddingStories.map((story, index) => {
             const isCenter = index === activeIndex;
+            const isHovered = hoveredIndex === index;
             const image = theme === "dark" ? story.imageDay : story.imageNight;
 
             return (
               <motion.div
                 key={story.id}
-                className="relative flex-shrink-0 h-[650px] w-[650px] rounded-sm overflow-hidden cursor-pointer group"
+                className="relative flex-shrink-0 h-[500px] w-[500px] rounded-sm overflow-hidden cursor-pointer group"
                 animate={{
-                  scale: isCenter ? 1.3 : 0.9,
-                  opacity: isCenter ? 1 : 0.5,
-                  filter: isCenter ? "grayscale(0%)" : "grayscale(100%)",
+                  scale: isCenter ? 1.15 : 0.85,
+                  opacity: isCenter ? 1 : 0.6,
                   zIndex: isCenter ? 10 : 0,
                 }}
                 transition={{ type: "spring", stiffness: 200, damping: 30 }}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
               >
                 {/* Image */}
                 <img
                   src={image}
                   alt={story.coupleNames}
                   className="h-full w-full object-cover transition-all duration-500"
+                  style={{
+                    filter: isHovered || isCenter ? "grayscale(0%)" : "grayscale(100%)",
+                  }}
                   loading="lazy"
                 />
 
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-black/30 transition-opacity duration-300 group-hover:bg-black/20" />
+                <div 
+                  className="absolute inset-0 bg-black/30 transition-opacity duration-300"
+                  style={{
+                    opacity: isHovered || isCenter ? 0.2 : 0.4,
+                  }}
+                />
 
                 {/* Project info - visible on center */}
-                {isCenter && (
+                {(isCenter || isHovered) && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
-                    className="absolute bottom-8 left-8 right-8"
+                    className="absolute bottom-6 left-6 right-6"
                   >
                     <span className="text-xs font-inter font-semibold tracking-widest text-accent-rose uppercase">
                       {story.category}
                     </span>
-                    <h3 className="text-5xl font-playfair font-light text-white mt-3">
+                    <h3 className="text-4xl font-playfair font-light text-white mt-2">
                       {story.coupleNames}
                     </h3>
-                    <p className="text-sm text-white/70 mt-2">
+                    <p className="text-xs text-white/70 mt-1">
                       {story.location} • {story.date}
                     </p>
                   </motion.div>
                 )}
 
-                {/* Play button - visible on center */}
-                {isCenter && (
+                {/* Play button - visible on center or hover */}
+                {(isCenter || isHovered) && (
                   <motion.button
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 rounded-full border border-white/50 p-4 hover:border-accent-rose hover:bg-accent-rose/10 transition-all"
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 rounded-full border border-white/50 p-3 hover:border-accent-rose hover:bg-accent-rose/10 transition-all"
                   >
-                    <Play className="h-6 w-6 text-white fill-white" />
+                    <Play className="h-5 w-5 text-white fill-white" />
                   </motion.button>
                 )}
               </motion.div>
