@@ -13,7 +13,7 @@ export default function LoveStories() {
 
   // Calculate total scroll distance needed for all 5 videos
   const totalVideos = weddingStories.length;
-  const videoWidth = 580; // width of each video frame + gap
+  const videoWidth = 580;
   const totalScrollDistance = totalVideos * videoWidth;
 
   // Map scroll progress to horizontal translation
@@ -25,15 +25,19 @@ export default function LoveStories() {
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
-          const scrollProgress = Math.min(window.scrollY / totalScroll, 1);
+          const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const scrollProgress = Math.min(window.scrollY / scrollHeight, 1);
           
           scrollYProgress.set(scrollProgress);
 
-          const activeIdx = Math.min(
-            Math.floor(scrollProgress * totalVideos),
-            totalVideos - 1
-          );
+          // More granular calculation: divide scroll into equal sections for each video
+          const sectionSize = 1 / totalVideos;
+          let activeIdx = Math.floor(scrollProgress / sectionSize);
+          
+          // Ensure we stay within bounds
+          activeIdx = Math.min(activeIdx, totalVideos - 1);
+          activeIdx = Math.max(activeIdx, 0);
+          
           setActiveIndex(activeIdx);
           ticking = false;
         });
@@ -52,8 +56,8 @@ export default function LoveStories() {
 
   return (
     <div className="relative">
-      {/* Scroll spacer - adjusted for 5 videos */}
-      <div className={`h-[500vh] ${bgColor}`} />
+      {/* Scroll spacer - increased to 700vh for better video distribution */}
+      <div className={`h-[700vh] ${bgColor}`} />
 
       {/* Sticky gallery container */}
       <div
