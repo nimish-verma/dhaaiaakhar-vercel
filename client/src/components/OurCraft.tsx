@@ -1,6 +1,8 @@
+/** Author: nim */
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
+import { PullUpText } from "./PullUpText";
 import { useTheme } from "@/context/ThemeContext";
 
 const services = {
@@ -55,27 +57,19 @@ export default function OurCraft() {
   };
 
   return (
+
     <section ref={containerRef} className={`${bgColor} py-32 px-6 md:px-20 border-t ${borderColor}`}>
-      <motion.div 
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={containerVariants}
-        className="mb-24"
-      >
-        <motion.h2 
-          variants={itemVariants}
-          className={`text-6xl md:text-8xl font-playfair font-light uppercase ${textColor} mb-8`}
-        >
+      <div className="mb-24">
+        <PullUpText className={`text-6xl md:text-8xl font-playfair font-light uppercase ${textColor} mb-8`}>
           Our Craft
-        </motion.h2>
-        <motion.p 
-          variants={itemVariants}
+        </PullUpText>
+        <PullUpText 
+          delay={0.2}
           className={`text-xl ${mutedColor} max-w-2xl font-light`}
         >
           We specialize in capturing moments that matter—whether it's the elegance of a wedding or the story of a brand.
-        </motion.p>
-      </motion.div>
+        </PullUpText>
+      </div>
 
       <div className="grid md:grid-cols-2 gap-16">
         {/* Weddings */}

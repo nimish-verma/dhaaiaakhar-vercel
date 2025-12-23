@@ -1,6 +1,8 @@
+/** Author: nim */
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
+import { PullUpText } from "./PullUpText";
 import { weddingStories } from "@/data/weddingData";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -15,21 +17,26 @@ export default function VideoPreview() {
   const borderColor = theme === "dark" ? "border-white/10" : "border-black/10";
 
   return (
+
     <section ref={containerRef} className={`${bgColor} py-16 md:py-32 px-4 md:px-20 border-t ${borderColor}`}>
-      <motion.div 
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        viewport={{ once: true }}
-        className="mb-12 md:mb-24"
-      >
-        <h2 className={`text-4xl md:text-8xl font-playfair font-light uppercase ${textColor} mb-4 md:mb-8`}>
+      <div className="mb-12 md:mb-24 text-center md:text-left">
+        <PullUpText className={`text-4xl md:text-8xl font-playfair font-light uppercase ${textColor} mb-4 md:mb-8`}>
           Featured Films
-        </h2>
-        <p className={`text-lg md:text-xl ${mutedColor} max-w-2xl font-light`}>
+        </PullUpText>
+        <motion.p 
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ 
+            duration: 0.5, 
+            delay: 1.2, 
+            ease: "easeOut" 
+          }}
+          className={`text-lg md:text-xl ${mutedColor} max-w-2xl font-light`}
+        >
           Watch our most recent cinematic wedding stories
-        </p>
-      </motion.div>
+        </motion.p>
+      </div>
 
       <motion.div 
         className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8"

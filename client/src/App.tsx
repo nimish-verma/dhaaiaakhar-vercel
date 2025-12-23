@@ -1,3 +1,4 @@
+/** Author: nim */
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { QueryClientProvider } from "@tanstack/react-query";

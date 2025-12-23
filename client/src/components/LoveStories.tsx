@@ -1,3 +1,4 @@
+/** Author: nim */
 import { useRef, useState, useEffect } from "react";
 import { motion, useTransform, useScroll, useSpring } from "framer-motion";
 import { weddingStories } from "@/data/weddingData";
@@ -163,6 +164,9 @@ export default function LoveStories() {
                   scale: isHovered ? 1.15 : 1,
                   opacity: 1,
                   zIndex: isHovered ? 10 : 0,
+                  boxShadow: isHovered 
+                    ? `0 20px 50px -10px ${theme === 'dark' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.3)'}` 
+                    : "0 10px 30px -10px rgba(0,0,0,0)"
                 }}
                 transition={{ duration: 0.5, ease: [0.33, 1, 0.68, 1] }}
                 onMouseEnter={() => setHoveredIndex(index)}

@@ -17,10 +17,10 @@ export default function Footer() {
   return (
     <footer ref={containerRef} className={`${bgColor} ${textColor} pt-32 pb-12 px-6 md:px-20 border-t ${borderColor}`}>
       <div className="flex flex-col items-center justify-center text-center mb-24">
-        <p className={`mb-8 font-inter ${mutedColor} uppercase tracking-widest text-xs`}>
+        <p className={`mb-8 font-inter ${mutedColor} uppercase tracking-widest text-xs transition-all duration-300 hover:[text-shadow:0_0_10px_rgba(255,255,255,0.6)] cursor-default`}>
           Ready to tell your story?
         </p>
-        <h2 className={`mb-12 text-6xl md:text-8xl font-playfair font-light uppercase`}>
+        <h2 className={`mb-12 text-6xl md:text-8xl font-playfair font-light uppercase transition-all duration-300 hover:[text-shadow:0_0_15px_rgba(255,255,255,0.6)] cursor-default`}>
           Dhaaiaakhar
         </h2>
         
@@ -34,10 +34,10 @@ export default function Footer() {
 
       <div className={`mt-24 flex flex-col md:flex-row items-center justify-between gap-6 text-xs ${mutedColor} uppercase tracking-wider font-inter`}>
         <div className="flex gap-6">
-          <a href="https://www.instagram.com/dhaaiaakhar/" target="_blank" rel="noopener noreferrer" className={`hover:text-accent-rose transition-colors font-light`}>Instagram</a>
-          <Link to="/contact" className={`hover:text-accent-rose transition-colors font-light`}>Contact</Link>
+          <a href="https://www.instagram.com/dhaaiaakhar/" target="_blank" rel="noopener noreferrer" className={`hover:text-accent-rose transition-all duration-300 hover:[text-shadow:0_0_8px_rgba(255,255,255,0.5)] font-light`}>Instagram</a>
+          <Link to="/contact" className={`hover:text-accent-rose transition-all duration-300 hover:[text-shadow:0_0_8px_rgba(255,255,255,0.5)] font-light`}>Contact</Link>
         </div>
-        <p className="font-light">© 2025 Dhaaiaakhar. All Rights Reserved.</p>
+        <p className="font-light transition-all duration-300 hover:[text-shadow:0_0_8px_rgba(255,255,255,0.5)] cursor-default">© 2025 Dhaaiaakhar. All Rights Reserved.</p>
       </div>
     </footer>
   );
