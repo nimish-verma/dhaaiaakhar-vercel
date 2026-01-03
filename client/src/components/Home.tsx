@@ -118,18 +118,17 @@ const weddings: WeddingItem[] = [
 const CarouselItem = memo(({ wedding, isActive, onClick, onHover, index }: { wedding: WeddingItem, isActive: boolean, onClick: () => void, onHover: () => void, index: number }) => {
   return (
     <motion.div
-      layout
+      // Removed 'layout' prop to prevent jitter/hallucination during hover
       onMouseEnter={onHover}
       onClick={onClick}
-      initial={{ opacity: 0, scale: 0.9 }}
+      // Simple, stable animations 
       animate={{ 
         opacity: isActive ? 1 : 0.6, 
         scale: isActive ? 1.05 : 0.95,
       }}
-      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.5 } }}
       transition={{ 
-        layout: { duration: 0.8, ease: "easeInOut" }, // Gentle fluid movement
-        opacity: { duration: 0.5 }
+        duration: 0.4, 
+        ease: "easeOut"
       }}
       className={`
         relative shrink-0 cursor-pointer overflow-hidden rounded-[4px] 
@@ -144,11 +143,11 @@ const CarouselItem = memo(({ wedding, isActive, onClick, onHover, index }: { wed
         className="h-full w-full object-cover"
         loading="eager"
         decoding="async"
-        draggable="false" // Prevent native drag to allow Framer drag
+        draggable="false" 
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none" />
       <div className="absolute bottom-3 left-3 right-3 pointer-events-none">
-        <p className={`text-[10px] uppercase tracking-wider text-white truncate transition-opacity duration-500 ${isActive ? 'opacity-100 font-bold' : 'opacity-70'}`}>
+        <p className={`text-[10px] uppercase tracking-wider text-white truncate transition-opacity duration-300 ${isActive ? 'opacity-100 font-bold' : 'opacity-70'}`}>
           {wedding.couple}
         </p>
       </div>
