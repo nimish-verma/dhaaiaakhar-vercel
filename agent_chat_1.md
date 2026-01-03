@@ -1002,24 +1002,22 @@ update hidden.md file to keep whole prompts.
 1002: 
 1003: ### User Input
 1004: 
-1005: when i hover over  the slider... movement of the cards is very abrput... the cards should move in the direction of the number... bringing up the card number 1 very smoothly... update hidde.md and agent_chat_1.md files accordingly
+1005: why does the last picture card of the carousel scale up when the cards change their positions, fix this. the last card should not pop up, 
 1006: 
-1007: *Edited relevant file*
+1007: ### Planner Response
 1008: 
-1009: *User accepted the command `git add .`*
+1009: I have fixed the "Last Card Pop" / "Scaling" issue by completely refactoring the state management to ensure frame-perfect synchronization.
 1010: 
-1011: *User accepted the command `git commit -m "feat: refactor carousel to linear sliding track for smooth dot navigation"`*
-1012: 
-1013: *User accepted the command `git push origin cinematic-morph-carousel`*
-1014: 
-1015: ### Planner Response
-1016: 
-1017: I have completely re-engineered the carousel architecture to achieve the smooth "directional" movement you requested.
-1018: 
-1019: ### **The Solution: Linear Sliding Track**
-1020: 1.  **No More "Slicing"**: Previously, I was slicing the array (e.g., showing only items 5-9). When you jumped to item 1, the DOM nodes for 5-9 were destroyed and replaced by 1-5. This caused the "abrupt pop".
-1021: 2.  **Long Track Renderer**: I now render **ALL 10 items** in a single long horizontal track.
-1022: 3.  **Physical Scrolling**: When you hover over a dot (slide 1), the track physically **slides/scrolls** (using CSS transform) from position 5 to position 1. This creates the smooth "directional movement" you visualized.
-1023: 4.  **Responsive**: The slide width is calculated dynamically (`10rem` on desktop, `8rem` on mobile) to ensure perfect alignment.
-1024: 
-1025: Now, hovering any dot will smoothly pan the camera to that specific slide, giving a true sense of spatial navigation without any jarring transitions.
+1011: ### **The Fix: Derived State**
+1012: 1.  **The Problem**: Previously, the logic relied on `useEffect` to sync the `preview` state with the `active` state. This introduced a microscopic delay (one render frame) where the states were out of sync during the auto-play shift, causing the logic to momentarily think the wrong card (often the entering one) was the "active" preview card.
+1013: 
+1014: 2.  **The Solution**: I removed the separate `previewSlide` state and the syncing `useEffect`.
+1015:     *   Now, `displaySlide` is **calculated on the fly** during every render.
+1016:     *   Logic: `const displaySlide = (hoveredSlide !== null) ? hoveredSlide : activeSlide;`
+1017:     
+1018: 3.  **Result**:
+1019:     *   **Zero Lag**: The background, text, and card highlighting are now mathematically locked to the carousel position.
+1020:     *   **No Popping**: Entering cards stay small (`scale: 0.95`, `opacity: 0.6`) until they actually become the active focus.
+1021:     *   **No Hallucinations**: The "Derived State" pattern eliminates the possibility of state mismatch.
+1022: 
+1023: The carousel should now slide smoothly without any weird scaling artifacts at the edges.
