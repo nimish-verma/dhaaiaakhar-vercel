@@ -313,7 +313,7 @@ export default function CinematicHome() {
                     >
                         <div className={`
                             transition-all duration-300 rounded-full 
-                            ${i === activeSlide ? "w-10 bg-white shadow-lg" : "w-2 bg-white/20 group-hover:bg-white/60"}
+                            ${i === previewSlide ? "w-10 bg-white shadow-lg" : "w-2 bg-white/20 group-hover:bg-white/60"}
                             h-1
                         `} />
                     </div>
