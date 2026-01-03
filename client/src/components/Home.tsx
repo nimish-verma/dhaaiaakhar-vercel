@@ -11,16 +11,14 @@ import goaBg from "../assets/images/home/goa.webp";
 import goaThumb from "../assets/images/home/goa_thumb.webp";
 import keralaBg from "../assets/images/home/kerala.webp";
 import keralaThumb from "../assets/images/home/kerala_thumb.webp";
-
-// Re-using assets to fill 6 slots as requested
-import jaipurBg from "../assets/images/home/udaipur.webp";
-import jaipurThumb from "../assets/images/home/udaipur_thumb.webp";
-import jodhpurBg from "../assets/images/home/mussoorie.webp";
-import jodhpurThumb from "../assets/images/home/mussoorie_thumb.webp";
-import rishikeshBg from "../assets/images/home/kerala.webp";
-import rishikeshThumb from "../assets/images/home/kerala_thumb.webp";
-import agraBg from "../assets/images/home/goa.webp";
-import agraThumb from "../assets/images/home/goa_thumb.webp";
+import jaipurBg from "../assets/images/home/jaipur.webp";
+import jaipurThumb from "../assets/images/home/jaipur_thumb.webp";
+import jodhpurBg from "../assets/images/home/jodhpur.webp";
+import jodhpurThumb from "../assets/images/home/jodhpur_thumb.webp";
+import rishikeshBg from "../assets/images/home/rishikesh.webp";
+import rishikeshThumb from "../assets/images/home/rishikesh_thumb.webp";
+import agraBg from "../assets/images/home/agra.webp";
+import agraThumb from "../assets/images/home/agra_thumb.webp";
 
 interface WeddingItem {
   id: number;
@@ -101,7 +99,7 @@ const weddings: WeddingItem[] = [
     couple: "Arav & Nitya",
     location: "Udaipur, Rajasthan",
     desc: "Lakeside whispers of love.",
-    image: udaipurBg, // Reusing
+    image: udaipurBg, 
     thumbnail: udaipurThumb,
   },
   {
@@ -109,7 +107,7 @@ const weddings: WeddingItem[] = [
     couple: "Dev & Diya",
     location: "Goa, India",
     desc: "Sunset horizons and joy.",
-    image: goaBg, // Reusing
+    image: goaBg, 
     thumbnail: goaThumb,
   }
 ];
