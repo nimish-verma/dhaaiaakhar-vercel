@@ -3,14 +3,14 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, MapPin } from "lucide-react";
 
-// Wedding Data structure: All items are now VIDEOS as requested
+// Wedding Data structure: Video + Static Poster Image
 interface WeddingItem {
   id: number;
   couple: string;
   location: string;
   desc: string;
   src: string; // Video URL
-  thumbnailSrc?: string; // Optional image fallback/poster
+  thumbnailSrc: string; // Static Image for slider & video poster
 }
 
 const weddings: WeddingItem[] = [
@@ -20,6 +20,7 @@ const weddings: WeddingItem[] = [
     location: "Udaipur, Rajasthan",
     desc: "A royal heritage celebration.",
     src: "https://videos.pexels.com/video-files/5532772/5532772-hd_1080_1920_25fps.mp4",
+    thumbnailSrc: "https://images.pexels.com/photos/5532772/pexels-photo-5532772.jpeg?auto=compress&cs=tinysrgb&w=600",
   },
   {
     id: 2,
@@ -27,6 +28,7 @@ const weddings: WeddingItem[] = [
     location: "Mussoorie, Uttarakhand",
     desc: "Mountains, mist, and memories.",
     src: "https://videos.pexels.com/video-files/4324121/4324121-hd_1080_1920_30fps.mp4",
+    thumbnailSrc: "https://images.pexels.com/photos/4324121/pexels-photo-4324121.jpeg?auto=compress&cs=tinysrgb&w=600",
   },
   {
     id: 3,
@@ -34,6 +36,7 @@ const weddings: WeddingItem[] = [
     location: "Goa, India",
     desc: "Sun, sand, and sacred vows.",
     src: "https://videos.pexels.com/video-files/3692637/3692637-hd_1920_1080_25fps.mp4",
+    thumbnailSrc: "https://images.pexels.com/photos/3692637/pexels-photo-3692637.jpeg?auto=compress&cs=tinysrgb&w=600",
   },
   {
     id: 4,
@@ -41,6 +44,7 @@ const weddings: WeddingItem[] = [
     location: "Jaipur, Rajasthan",
     desc: "Pink city, golden moments.",
     src: "https://videos.pexels.com/video-files/3196238/3196238-hd_1920_1080_25fps.mp4",
+    thumbnailSrc: "https://images.pexels.com/photos/3196238/pexels-photo-3196238.jpeg?auto=compress&cs=tinysrgb&w=600",
   },
   {
     id: 5,
@@ -48,6 +52,7 @@ const weddings: WeddingItem[] = [
     location: "Kerala, India",
     desc: "Backwaters and new beginnings.",
     src: "https://videos.pexels.com/video-files/4993136/4993136-hd_1920_1080_30fps.mp4", 
+    thumbnailSrc: "https://images.pexels.com/photos/4993136/pexels-photo-4993136.jpeg?auto=compress&cs=tinysrgb&w=600",
   },
   {
     id: 6,
@@ -55,6 +60,7 @@ const weddings: WeddingItem[] = [
     location: "Jodhpur, Rajasthan",
     desc: "Under the blue city sky.",
     src: "https://videos.pexels.com/video-files/8056269/8056269-hd_1920_1080_25fps.mp4",
+    thumbnailSrc: "https://images.pexels.com/photos/8056269/pexels-photo-8056269.jpeg?auto=compress&cs=tinysrgb&w=600",
   }
 ];
 
@@ -64,13 +70,12 @@ export default function CinematicHome() {
 
   const activeWedding = weddings[activeSlide];
 
-  // Debounced hover handler to prevent glitchy rapid updates
+  // Debounced hover handler
   const handleHover = (index: number) => {
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    
     hoverTimeoutRef.current = setTimeout(() => {
       setActiveSlide(index);
-    }, 50); // Small 50ms delay is enough to smooth out jitter but feels instant
+    }, 50);
   };
 
   useEffect(() => {
@@ -83,7 +88,7 @@ export default function CinematicHome() {
     <div className="relative h-screen w-full overflow-hidden bg-black font-sans text-white">
       {/* BACKGROUND LAYER - Crossfade Animation */}
       <div className="absolute inset-0 z-0">
-        <AnimatePresence mode="popLayout">
+        <AnimatePresence mode="popLayout" initial={false}>
           <motion.div
             key={activeWedding.id}
             className="absolute inset-0 h-full w-full overflow-hidden"
@@ -92,11 +97,17 @@ export default function CinematicHome() {
             exit={{ opacity: 0 }}
             transition={{ 
                 opacity: { duration: 0.8, ease: "easeInOut" },
-                scale: { duration: 6, ease: "linear" } // Continuous slow movement
+                scale: { duration: 8, ease: "linear" } 
             }}
           >
+            {/* 
+               PERFORMANCE OPTIMIZATION: 
+               Use poster for immediate display.
+               Video autoPlays but since it's the ONLY main video, bandwidth is focused here.
+            */}
             <video
                 src={activeWedding.src}
+                poster={activeWedding.thumbnailSrc}
                 autoPlay
                 muted
                 loop
@@ -156,7 +167,7 @@ export default function CinematicHome() {
 
         {/* CAROUSEL (Bottom Right) */}
         <div className="flex flex-col justify-end lg:items-end lg:pb-12 pointer-events-none">
-          {/* Video Cards Slider */}
+          {/* Video Cards Slider - NOW WITH STATIC IMAGES FOR PERFORMANCE */}
           <div className="pointer-events-auto flex gap-4 overflow-x-auto pb-4 pt-12 pl-1 no-scrollbar mask-gradient-r">
             {weddings.map((wedding, index) => {
               const isActive = index === activeSlide;
@@ -178,14 +189,13 @@ export default function CinematicHome() {
                     ${isActive ? 'border-2 border-white/80 shadow-[0_0_30px_rgba(0,0,0,0.5)]' : 'border border-white/10 grayscale hover:grayscale-0'}
                   `}
                 >
-                    <video
-                      src={wedding.src}
-                      muted
-                      playsInline
-                      loop // Loop previews for motion
-                      autoPlay // Autoplay previews so they look alive
-                      className="h-full w-full object-cover"
-                    />
+                  {/* OPTIMIZATION: Use Image Thumbnail instead of Video */}
+                  <img
+                    src={wedding.thumbnailSrc}
+                    alt={wedding.couple}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
                   
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
                   
