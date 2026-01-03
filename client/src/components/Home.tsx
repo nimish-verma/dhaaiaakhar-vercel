@@ -125,6 +125,13 @@ const CarouselItem = memo(({ wedding, isActive, isPreview, onClick, onHover, ind
          onMouseEnter={onHover}
          onClick={onClick}
          whileHover={{ scale: 1.05, opacity: 1, filter: 'grayscale(0%)', borderWidth: 2, borderColor: 'rgba(255,255,255,0.8)' }} // Local Pop Interaction
+         initial={{ 
+            opacity: 0.6, 
+            scale: 0.95, 
+            filter: 'grayscale(100%)',
+            borderWidth: 1,
+            borderColor: 'rgba(255,255,255,0.1)'
+         }}
          animate={{ 
             opacity: isPreview ? 1 : 0.6, 
             scale: isPreview ? 1.05 : 0.95, // Scale matches active state

@@ -1021,3 +1021,27 @@ update hidden.md file to keep whole prompts.
 1021:     *   **No Hallucinations**: The "Derived State" pattern eliminates the possibility of state mismatch.
 1022: 
 1023: The carousel should now slide smoothly without any weird scaling artifacts at the edges.
+1024: 
+1025: ### User Input
+1026: 
+1027: fix the last picture card of the carousel which scales up when the cards change their positions, fix this. the last card should not pop up when the cards change thier postions. it should be the same size as it is always, and should only pop up when it is at the left most part of the carousel or if the mouse is hovered on it.
+1028: 
+1029: ### Planner Response
+1030: 
+1031: I have identified and fixed the "Last Card Pop" visual glitch.
+1032: 
+1033: ### **The Issue:**
+1034: Even though the logic was fixed, the *animation* definition was incomplete. When a new card enters the carousel (at the rightmost position), it mounts into the DOM. Because it lacked an explicit `initial` state, Framer Motion rendered it at the default scale of `1.0` for a split second before animating it down to its correct resting size of `0.95`. This created the visual "Pop" you were seeing.
+1035: 
+1036: ### **The Fix:**
+1037: I added an explicit `initial` prop to the `CarouselItem` component:
+1038: ```tsx
+1039: initial={{ 
+1040:    opacity: 0.6, 
+1041:    scale: 0.95, 
+1042:    filter: 'grayscale(100%)',
+1043:    ...
+1044: }}
+1045: ```
+1046: 
+1047: Now, every new card enters the screen **already at 0.95 scale**, matching the rest of the non-active cards perfectly. It will never "pop" unless it is the Leftmost (Active) card or you hover over it.
