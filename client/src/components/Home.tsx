@@ -114,43 +114,43 @@ const weddings: WeddingItem[] = [
   }
 ];
 
-// MEMOIZED CAROUSEL ITEM
+// MEMOIZED CAROUSEL ITEM - Wrapper/Inner Architecture
 const CarouselItem = memo(({ wedding, isActive, onClick, onHover, index }: { wedding: WeddingItem, isActive: boolean, onClick: () => void, onHover: () => void, index: number }) => {
   return (
     <motion.div
-      // Removed 'layout' prop to prevent jitter/hallucination during hover
-      onMouseEnter={onHover}
-      onClick={onClick}
-      // Simple, stable animations 
-      animate={{ 
-        opacity: isActive ? 1 : 0.6, 
-        scale: isActive ? 1.05 : 0.95,
-      }}
-      transition={{ 
-        duration: 0.4, 
-        ease: "easeOut"
-      }}
-      className={`
-        relative shrink-0 cursor-pointer overflow-hidden rounded-[4px] 
-        h-40 w-28 md:h-56 md:w-36 
-        will-change-transform
-        ${isActive ? 'border-2 border-white/80 shadow-2xl z-10' : 'border border-white/10 grayscale z-0'}
-      `}
+      layout // Wrapper handles Layout Position ONLY
+      transition={{ duration: 0.8, ease: "easeInOut" }} // Calm slide
+      className="relative shrink-0 h-40 w-28 md:h-56 md:w-36"
     >
-      <img
-        src={wedding.thumbnail}
-        alt={wedding.couple}
-        className="h-full w-full object-cover"
-        loading="eager"
-        decoding="async"
-        draggable="false" 
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none" />
-      <div className="absolute bottom-3 left-3 right-3 pointer-events-none">
-        <p className={`text-[10px] uppercase tracking-wider text-white truncate transition-opacity duration-300 ${isActive ? 'opacity-100 font-bold' : 'opacity-70'}`}>
-          {wedding.couple}
-        </p>
-      </div>
+      <motion.div
+         // Inner handles visual Scale/Border ONLY
+         onMouseEnter={onHover}
+         onClick={onClick}
+         animate={{ 
+            opacity: isActive ? 1 : 0.6, 
+            scale: isActive ? 1.05 : 0.95, // Scale happens inside, doesn't affect layout flow
+            filter: isActive ? 'grayscale(0%)' : 'grayscale(100%)',
+            borderWidth: isActive ? 2 : 1,
+            borderColor: isActive ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.1)',
+         }}
+         transition={{ duration: 0.4, ease: "easeOut" }}
+         className="w-full h-full rounded-[4px] overflow-hidden cursor-pointer shadow-2xl bg-black"
+      >
+        <img
+          src={wedding.thumbnail}
+          alt={wedding.couple}
+          className="h-full w-full object-cover"
+          loading="eager"
+          decoding="async"
+          draggable="false" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute bottom-3 left-3 right-3 pointer-events-none">
+          <p className={`text-[10px] uppercase tracking-wider text-white truncate transition-opacity duration-300 ${isActive ? 'opacity-100 font-bold' : 'opacity-70'}`}>
+            {wedding.couple}
+          </p>
+        </div>
+      </motion.div>
     </motion.div>
   );
 });
@@ -194,10 +194,8 @@ export default function CinematicHome() {
   const handleDragEnd = (event: any, info: any) => {
     const swipeThreshold = 50;
     if (info.offset.x < -swipeThreshold) {
-      // Swipe Left -> Next
       setActiveSlide((prev) => (prev + 1) % weddings.length);
     } else if (info.offset.x > swipeThreshold) {
-      // Swipe Right -> Prev
       setActiveSlide((prev) => (prev - 1 + weddings.length) % weddings.length);
     }
   };
@@ -207,8 +205,7 @@ export default function CinematicHome() {
       
       {/* 
           OPTIMIZED BACKGROUND STACK 
-          Instead of mounting/unmounting (which lags), we keep all images in DOM
-          and just toggle opacity. This is GPU-only and 0-latency.
+          Opacity toggle only. No mounting/unmounting.
       */}
       <div className="absolute inset-0 z-0">
         {weddings.map((wedding, index) => (
@@ -221,22 +218,21 @@ export default function CinematicHome() {
                     src={wedding.image}
                     alt={wedding.couple}
                     className="h-full w-full object-cover opacity-60"
-                    decoding="sync" // Force immediate decoding for active slide
+                    decoding="sync" 
                 />
             </div>
             {/* Gradient Overlay attached to image container */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10" />
           </div>
         ))}
-         {/* Noise Overlay - Static */}
+         {/* Noise Overlay */}
          <div className="absolute inset-0 z-20 pointer-events-none opacity-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay"></div>
       </div>
 
       {/* FOREGROUND CONTENT */}
       <div className="relative z-30 grid h-full grid-cols-1 grid-rows-[1fr_auto] p-6 md:p-12 lg:grid-cols-[1fr_450px] lg:grid-rows-1 pointer-events-none">
         
-        {/* MAIN TEXT (Bottom Left) */}
-        {/* Added z-50 and restricted width to prevent overlap */}
+        {/* MAIN TEXT */}
         <div className="flex flex-col justify-end pb-24 md:pb-28 lg:pb-32 pointer-events-none select-none z-50 max-w-xl xl:max-w-2xl">
           <AnimatePresence mode="wait">
             <motion.div
@@ -275,7 +271,7 @@ export default function CinematicHome() {
           </AnimatePresence>
         </div>
 
-        {/* CAROUSEL (Bottom Right) */}
+        {/* CAROUSEL - REMOVED AnimatePresence to ensure exactly 5 items */}
         <div className="flex flex-col justify-end lg:items-end lg:pb-12 pointer-events-none z-40">
           <motion.div 
             className="pointer-events-auto flex gap-4 overflow-hidden pb-4 pt-12 pl-1 mask-gradient-r touch-pan-y"
@@ -286,8 +282,6 @@ export default function CinematicHome() {
             dragElastic={0.2}
             onDragEnd={handleDragEnd}
           >
-             {/* Render only visible window */}
-             <AnimatePresence mode="popLayout" initial={false}>
                 {visibleWeddings.map((wedding, i) => (
                     <CarouselItem 
                         key={wedding.id}
@@ -298,7 +292,6 @@ export default function CinematicHome() {
                         index={i} 
                     />
                 ))}
-             </AnimatePresence>
           </motion.div>
           
           <div className="flex items-center justify-between mt-6 lg:ml-auto lg:pr-2 lg:w-full pointer-events-auto">
