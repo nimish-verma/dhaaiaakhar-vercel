@@ -1,16 +1,16 @@
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, MapPin } from "lucide-react";
 
-// Wedding Data structure with mixed media (Video & Image)
+// Wedding Data structure: All items are now VIDEOS as requested
 interface WeddingItem {
   id: number;
   couple: string;
   location: string;
   desc: string;
-  src: string;
-  type: "video" | "image";
+  src: string; // Video URL
+  thumbnailSrc?: string; // Optional image fallback/poster
 }
 
 const weddings: WeddingItem[] = [
@@ -19,8 +19,7 @@ const weddings: WeddingItem[] = [
     couple: "Aditi & Vihaan",
     location: "Udaipur, Rajasthan",
     desc: "A royal heritage celebration.",
-    src: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=1920",
-    type: "image",
+    src: "https://videos.pexels.com/video-files/5532772/5532772-hd_1080_1920_25fps.mp4",
   },
   {
     id: 2,
@@ -28,87 +27,87 @@ const weddings: WeddingItem[] = [
     location: "Mussoorie, Uttarakhand",
     desc: "Mountains, mist, and memories.",
     src: "https://videos.pexels.com/video-files/4324121/4324121-hd_1080_1920_30fps.mp4",
-    type: "video",
   },
   {
     id: 3,
     couple: "Ishaan & Myra",
     location: "Goa, India",
     desc: "Sun, sand, and sacred vows.",
-    src: "https://images.unsplash.com/photo-1544078751-58fee2d8a03b?auto=format&fit=crop&q=80&w=1920",
-    type: "image",
+    src: "https://videos.pexels.com/video-files/3692637/3692637-hd_1920_1080_25fps.mp4",
   },
   {
     id: 4,
     couple: "Arjun & Zara",
     location: "Jaipur, Rajasthan",
     desc: "Pink city, golden moments.",
-    src: "https://images.unsplash.com/photo-1621621667797-e06afc217fb0?auto=format&fit=crop&q=80&w=1920",
-    type: "image",
+    src: "https://videos.pexels.com/video-files/3196238/3196238-hd_1920_1080_25fps.mp4",
   },
   {
     id: 5,
     couple: "Siddharth & Ananya",
     location: "Kerala, India",
     desc: "Backwaters and new beginnings.",
-    src: "https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&q=80&w=1920",
-    type: "image",
+    src: "https://videos.pexels.com/video-files/4993136/4993136-hd_1920_1080_30fps.mp4", 
   },
   {
     id: 6,
     couple: "Vikram & Pooja",
     location: "Jodhpur, Rajasthan",
     desc: "Under the blue city sky.",
-    src: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&q=80&w=1920",
-    type: "image",
+    src: "https://videos.pexels.com/video-files/8056269/8056269-hd_1920_1080_25fps.mp4",
   }
 ];
 
 export default function CinematicHome() {
   const [activeSlide, setActiveSlide] = useState(0);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const activeWedding = weddings[activeSlide];
 
+  // Debounced hover handler to prevent glitchy rapid updates
+  const handleHover = (index: number) => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    
+    hoverTimeoutRef.current = setTimeout(() => {
+      setActiveSlide(index);
+    }, 50); // Small 50ms delay is enough to smooth out jitter but feels instant
+  };
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    };
+  }, []);
+
   return (
     <div className="relative h-screen w-full overflow-hidden bg-black font-sans text-white">
-      {/* BACKGROUND LAYER - Animates physically from the thumbnail */}
+      {/* BACKGROUND LAYER - Crossfade Animation */}
       <div className="absolute inset-0 z-0">
-        <AnimatePresence mode="popLayout" initial={false}>
+        <AnimatePresence mode="popLayout">
           <motion.div
             key={activeWedding.id}
-            layoutId={`video-container-${activeWedding.id}`}
             className="absolute inset-0 h-full w-full overflow-hidden"
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }} // Slow Ken Burns effect
+            exit={{ opacity: 0 }}
             transition={{ 
-                duration: 0.8, 
-                ease: [0.32, 0.72, 0, 1] 
+                opacity: { duration: 0.8, ease: "easeInOut" },
+                scale: { duration: 6, ease: "linear" } // Continuous slow movement
             }}
           >
-            <motion.div 
-                className="relative h-full w-full"
-                initial={{ scale: 1.1 }} // subtle zoom effect on enter
-                animate={{ scale: 1 }}
-                transition={{ duration: 1.4, ease: "easeOut" }}
-            >
-                {activeWedding.type === "video" ? (
-                  <video
-                      src={activeWedding.src}
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      className="h-full w-full object-cover opacity-60"
-                  />
-                ) : (
-                  <img
-                      src={activeWedding.src}
-                      alt={activeWedding.couple}
-                      className="h-full w-full object-cover opacity-60"
-                  />
-                )}
-                
-                {/* Overlay for text readability */}
-                <div className="absolute inset-0 bg-black/40" />
-            </motion.div>
+            <video
+                src={activeWedding.src}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="h-full w-full object-cover opacity-60"
+            />
+            {/* Overlay for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10" />
+            
+            {/* Optional Grain for cinematic feel */}
+            <div className="absolute inset-0 pointer-events-none opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay"></div>
           </motion.div>
         </AnimatePresence>
       </div>
@@ -117,39 +116,39 @@ export default function CinematicHome() {
       <div className="relative z-10 grid h-full grid-cols-1 grid-rows-[1fr_auto] p-6 md:p-12 lg:grid-cols-[1fr_450px] lg:grid-rows-1 pointer-events-none">
         
         {/* MAIN TEXT (Bottom Left) */}
-        <div className="flex flex-col justify-end pb-20 lg:pb-24 pointer-events-none">
+        <div className="flex flex-col justify-end pb-24 md:pb-28 lg:pb-32 pointer-events-none select-none">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeWedding.id}
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -50, opacity: 0 }}
+              initial={{ y: 30, opacity: 0, filter: "blur(10px)" }}
+              animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+              exit={{ y: -20, opacity: 0, filter: "blur(5px)" }}
               transition={{ duration: 0.6, ease: "circOut" }}
               className="pointer-events-auto"
             >
-              <div className="flex items-center gap-2 text-sm md:text-base tracking-[0.2em] uppercase text-white/80 mb-4">
-                <MapPin className="w-4 h-4 text-white" />
+              <div className="flex items-center gap-3 text-sm md:text-base tracking-[0.2em] uppercase text-white/70 mb-6">
+                <MapPin className="w-4 h-4 text-accent-rose" />
                 <span>{activeWedding.location}</span>
-                <span className="w-8 h-[1px] bg-white/50 inline-block ml-2"/>
+                <span className="w-12 h-[1px] bg-white/20 inline-block ml-2"/>
               </div>
 
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold leading-[0.9] tracking-tight text-white mix-blend-overlay">
+              <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif font-medium leading-[0.85] tracking-tight text-white/90 drop-shadow-2xl">
                 {activeWedding.couple}
               </h1>
               
-              <p className="mt-6 max-w-lg text-lg text-white/80 font-light leading-relaxed">
+              <p className="mt-8 max-w-lg text-lg text-white/70 font-light leading-relaxed tracking-wide">
                 {activeWedding.desc}
               </p>
 
               <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="mt-10 flex items-center gap-4 group cursor-pointer"
+                className="mt-12 flex items-center gap-4 group cursor-pointer"
               >
-                  <div className="h-12 w-12 rounded-full border border-white/30 flex items-center justify-center backdrop-blur-md group-hover:bg-white/20 transition-colors">
-                      <Play className="h-4 w-4 fill-white text-white" />
+                  <div className="h-14 w-14 rounded-full border border-white/20 flex items-center justify-center backdrop-blur-md group-hover:bg-white/10 transition-all duration-300">
+                      <Play className="h-5 w-5 fill-white text-white group-hover:scale-110 transition-transform" />
                   </div>
-                  <span className="uppercase tracking-widest text-sm font-medium">Watch Film</span>
+                  <span className="uppercase tracking-[0.2em] text-xs font-medium opacity-80 group-hover:opacity-100 transition-opacity">Watch Film</span>
               </motion.button>
             </motion.div>
           </AnimatePresence>
@@ -157,50 +156,41 @@ export default function CinematicHome() {
 
         {/* CAROUSEL (Bottom Right) */}
         <div className="flex flex-col justify-end lg:items-end lg:pb-12 pointer-events-none">
-          <div className="pointer-events-auto flex gap-4 overflow-x-auto pb-4 pt-4 lg:pt-0 pl-1 no-scrollbar mask-gradient-r">
+          {/* Video Cards Slider */}
+          <div className="pointer-events-auto flex gap-4 overflow-x-auto pb-4 pt-12 pl-1 no-scrollbar mask-gradient-r">
             {weddings.map((wedding, index) => {
               const isActive = index === activeSlide;
               
-              // If active, we render a placeholder to keep layout stable but hide content
-              // The `layoutId` logic handles the morphing from this position to the background
-              if (isActive) {
-                  return (
-                      <div key={wedding.id} className="w-0 overflow-hidden transition-all duration-500 ease-in-out"></div>
-                  )
-              }
-
               return (
                 <motion.div
                   key={wedding.id}
-                  layoutId={`video-container-${wedding.id}`}
-                  onMouseEnter={() => setActiveSlide(index)} // Interaction changed to HOVER
+                  onMouseEnter={() => handleHover(index)}
+                  onClick={() => setActiveSlide(index)}
                   initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  whileHover={{ y: -10, transition: { duration: 0.2 } }}
-                  className="relative shrink-0 cursor-pointer overflow-hidden rounded-[4px] h-48 w-32 md:h-64 md:w-40 border border-white/20 shadow-2xl hover:border-white/60 transition-colors"
+                  animate={{ opacity: isActive ? 1 : 0.7, x: 0, scale: isActive ? 1.05 : 0.95 }}
+                  whileHover={{ scale: 1.05, opacity: 1 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
+                  className={`
+                    relative shrink-0 cursor-pointer overflow-hidden rounded-[4px] 
+                    h-40 w-28 md:h-56 md:w-36 
+                    transition-all duration-500
+                    ${isActive ? 'border-2 border-white/80 shadow-[0_0_30px_rgba(0,0,0,0.5)]' : 'border border-white/10 grayscale hover:grayscale-0'}
+                  `}
                 >
-                  {wedding.type === "video" ? (
                     <video
                       src={wedding.src}
                       muted
                       playsInline
-                      loop
-                      onMouseOver={(e) => e.currentTarget.play()}
-                      onMouseOut={(e) => e.currentTarget.pause()}
+                      loop // Loop previews for motion
+                      autoPlay // Autoplay previews so they look alive
                       className="h-full w-full object-cover"
                     />
-                  ) : (
-                    <img
-                      src={wedding.src}
-                      alt={wedding.couple}
-                      className="h-full w-full object-cover"
-                    />
-                  )}
                   
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
                   
                   <div className="absolute bottom-3 left-3 right-3">
-                    <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-white truncate">
+                    <p className={`text-[10px] uppercase tracking-wider text-white truncate transition-all ${isActive ? 'opacity-100 font-bold' : 'opacity-70'}`}>
                       {wedding.couple}
                     </p>
                   </div>
@@ -210,14 +200,28 @@ export default function CinematicHome() {
           </div>
           
           {/* Progress Indicators */}
-          <div className="flex gap-2 mt-4 lg:pr-1 pointer-events-auto">
+          <div className="flex items-center gap-3 mt-6 lg:pr-2 pointer-events-auto">
              {weddings.map((_, i) => (
-                 <div 
+                 <motion.button 
                     key={i} 
-                    onMouseEnter={() => setActiveSlide(i)} // Also hoverable
+                    onMouseEnter={() => handleHover(i)}
                     onClick={() => setActiveSlide(i)}
-                    className={`h-[3px] rounded-full transition-all duration-500 cursor-pointer ${i === activeSlide ? "w-12 bg-white" : "w-4 bg-white/30 hover:bg-white/60"}`}
-                 />
+                    className="group relative py-2 outline-none" // increase clickable area
+                 >
+                    <div className={`
+                        transition-all duration-500 rounded-full 
+                        ${i === activeSlide ? "w-10 bg-white shadow-[0_0_15px_rgba(255,255,255,0.4)]" : "w-2 bg-white/20 group-hover:bg-white/60"}
+                        h-1
+                    `} />
+                    {/* Hover tooltip for dot */}
+                    <div className={`
+                        absolute bottom-full left-1/2 -translate-x-1/2 mb-2 
+                        text-[9px] uppercase tracking-widest text-white/50 whitespace-nowrap
+                        opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                    `}>
+                        {weddings[i].couple}
+                    </div>
+                 </motion.button>
              ))}
           </div>
         </div>
