@@ -976,3 +976,26 @@ update hidden.md file to keep whole prompts.
 976: *   **Documentation**: Full history logged in `.hidden.md` and `agent_chat_1.md`.
 977: 
 978: The `cinematic-morph-carousel` branch is up to date and ready. Happy coding!
+979: 
+980: ### User Input
+981: 
+982: keep the cursor same, the pink dot should appear everywhere on the site, do not change it to the hand icon when it is hovered overe the picture card carousel
+983: 
+984: *Edited relevant file*
+985: 
+986: *User accepted the command `git add .`*
+987: 
+988: *User accepted the command `git commit -m "fix: enforce custom cursor on carousel items"`*
+989: 
+990: *User accepted the command `git push origin cinematic-morph-carousel`*
+991: 
+992: ### Planner Response
+993: 
+994: I have updated the site to ensure the **Pink Dot** cursor remains visible everywhere.
+995: 
+996: ### **Changes:**
+997: 1.  **Cursor Check**: Confirmed that `index.css` sets a custom SVG cursor globally.
+998: 2.  **Removal of Override**: I removed the `cursor-pointer` class from the **Carousel Cards**, **Buttons**, and **Dots** in `Home.tsx`.
+999: 3.  **Result**: Now, when you hover over these interactive elements, the browser will NOT switch to the default hand icon. It will keep showing your custom "Pink Dot" cursor, maintaining the seamless, immersive feel you requested.
+1000: 
+1001: The fix has been pushed to GitHub.

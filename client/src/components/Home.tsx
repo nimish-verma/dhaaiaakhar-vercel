@@ -133,7 +133,7 @@ const CarouselItem = memo(({ wedding, isActive, isPreview, onClick, onHover, ind
             borderColor: isPreview ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.1)',
          }}
          transition={{ duration: 0.4, ease: "easeOut" }}
-         className="w-full h-full rounded-[4px] overflow-hidden cursor-pointer shadow-2xl bg-black"
+         className="w-full h-full rounded-[4px] overflow-hidden shadow-2xl bg-black"
       >
         <img
           src={wedding.thumbnail}
@@ -266,7 +266,7 @@ export default function CinematicHome() {
               <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="mt-8 md:mt-12 flex items-center gap-4 group cursor-pointer"
+                className="mt-8 md:mt-12 flex items-center gap-4 group"
               >
                   <div className="h-14 w-14 rounded-full border border-white/20 flex items-center justify-center backdrop-blur-md group-hover:bg-white/10 transition-all duration-300">
                       <Play className="h-5 w-5 fill-white text-white group-hover:scale-110 transition-transform" />
@@ -309,7 +309,7 @@ export default function CinematicHome() {
                         key={i} 
                         onMouseEnter={() => setPreviewSlide(i)} // PREVIEW only on hover
                         onClick={() => setActiveSlide(i)}       // ACTIVATE on click
-                        className="group relative py-2 outline-none cursor-pointer" 
+                        className="group relative py-2 outline-none" 
                     >
                         <div className={`
                             transition-all duration-300 rounded-full 
