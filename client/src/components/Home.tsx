@@ -1,38 +1,67 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, MapPin } from "lucide-react";
 
-// Wedding Data structure as requested
-const weddings = [
+// Wedding Data structure with mixed media (Video & Image)
+interface WeddingItem {
+  id: number;
+  couple: string;
+  location: string;
+  desc: string;
+  src: string;
+  type: "video" | "image";
+}
+
+const weddings: WeddingItem[] = [
   {
     id: 1,
     couple: "Aditi & Vihaan",
     location: "Udaipur, Rajasthan",
     desc: "A royal heritage celebration.",
-    video: "https://videos.pexels.com/video-files/5532772/5532772-hd_1080_1920_25fps.mp4",
+    src: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=1920",
+    type: "image",
   },
   {
     id: 2,
     couple: "Karan & Riya",
     location: "Mussoorie, Uttarakhand",
     desc: "Mountains, mist, and memories.",
-    video: "https://videos.pexels.com/video-files/4324121/4324121-hd_1080_1920_30fps.mp4",
+    src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&q=80&w=1920",
+    type: "image",
   },
   {
     id: 3,
     couple: "Ishaan & Myra",
     location: "Goa, India",
     desc: "Sun, sand, and sacred vows.",
-    video: "https://videos.pexels.com/video-files/3692637/3692637-hd_1920_1080_25fps.mp4",
+    src: "https://images.unsplash.com/photo-1544078751-58fee2d8a03b?auto=format&fit=crop&q=80&w=1920",
+    type: "image",
   },
   {
     id: 4,
     couple: "Arjun & Zara",
     location: "Jaipur, Rajasthan",
     desc: "Pink city, golden moments.",
-    video: "https://videos.pexels.com/video-files/3196238/3196238-hd_1920_1080_25fps.mp4",
+    src: "https://images.unsplash.com/photo-1621621667797-e06afc217fb0?auto=format&fit=crop&q=80&w=1920",
+    type: "image",
   },
+  {
+    id: 5,
+    couple: "Siddharth & Ananya",
+    location: "Kerala, India",
+    desc: "Backwaters and new beginnings.",
+    src: "https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&q=80&w=1920",
+    type: "image",
+  },
+  {
+    id: 6,
+    couple: "Vikram & Pooja",
+    location: "Jodhpur, Rajasthan",
+    desc: "Under the blue city sky.",
+    src: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&q=80&w=1920",
+    type: "image",
+  }
 ];
 
 export default function CinematicHome() {
@@ -60,14 +89,23 @@ export default function CinematicHome() {
                 animate={{ scale: 1 }}
                 transition={{ duration: 1.4, ease: "easeOut" }}
             >
-                <video
-                    src={activeWedding.video}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className="h-full w-full object-cover opacity-60"
-                />
+                {activeWedding.type === "video" ? (
+                  <video
+                      src={activeWedding.src}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="h-full w-full object-cover opacity-60"
+                  />
+                ) : (
+                  <img
+                      src={activeWedding.src}
+                      alt={activeWedding.couple}
+                      className="h-full w-full object-cover opacity-60"
+                  />
+                )}
+                
                 {/* Overlay for text readability */}
                 <div className="absolute inset-0 bg-black/40" />
             </motion.div>
@@ -141,15 +179,24 @@ export default function CinematicHome() {
                   whileHover={{ y: -10, transition: { duration: 0.2 } }}
                   className="relative shrink-0 cursor-pointer overflow-hidden rounded-[4px] h-48 w-32 md:h-64 md:w-40 border border-white/20 shadow-2xl hover:border-white/60 transition-colors"
                 >
-                  <video
-                    src={wedding.video}
-                    muted
-                    playsInline
-                    loop
-                    onMouseOver={(e) => e.currentTarget.play()}
-                    onMouseOut={(e) => e.currentTarget.pause()}
-                    className="h-full w-full object-cover"
-                  />
+                  {wedding.type === "video" ? (
+                    <video
+                      src={wedding.src}
+                      muted
+                      playsInline
+                      loop
+                      onMouseOver={(e) => e.currentTarget.play()}
+                      onMouseOut={(e) => e.currentTarget.pause()}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      src={wedding.src}
+                      alt={wedding.couple}
+                      className="h-full w-full object-cover"
+                    />
+                  )}
+                  
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />
                   
                   <div className="absolute bottom-3 left-3 right-3">
