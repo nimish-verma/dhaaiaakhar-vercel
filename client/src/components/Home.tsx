@@ -118,19 +118,24 @@ const weddings: WeddingItem[] = [
 const CarouselItem = memo(({ wedding, isActive, onClick, onHover, index }: { wedding: WeddingItem, isActive: boolean, onClick: () => void, onHover: () => void, index: number }) => {
   return (
     <motion.div
-      layout // layout prop enables smooth position changes
+      layout
       onMouseEnter={onHover}
       onClick={onClick}
+      initial={{ opacity: 0, scale: 0.9 }}
       animate={{ 
         opacity: isActive ? 1 : 0.6, 
         scale: isActive ? 1.05 : 0.95,
       }}
-      transition={{ duration: 0.3 }}
+      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.5 } }}
+      transition={{ 
+        layout: { duration: 0.8, ease: "easeInOut" }, // Gentle fluid movement
+        opacity: { duration: 0.5 }
+      }}
       className={`
         relative shrink-0 cursor-pointer overflow-hidden rounded-[4px] 
         h-40 w-28 md:h-56 md:w-36 
         will-change-transform
-        ${isActive ? 'border-2 border-white/80 shadow-2xl' : 'border border-white/10 grayscale'}
+        ${isActive ? 'border-2 border-white/80 shadow-2xl z-10' : 'border border-white/10 grayscale z-0'}
       `}
     >
       <img
@@ -139,10 +144,11 @@ const CarouselItem = memo(({ wedding, isActive, onClick, onHover, index }: { wed
         className="h-full w-full object-cover"
         loading="eager"
         decoding="async"
+        draggable="false" // Prevent native drag to allow Framer drag
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none" />
       <div className="absolute bottom-3 left-3 right-3 pointer-events-none">
-        <p className={`text-[10px] uppercase tracking-wider text-white truncate transition-opacity duration-300 ${isActive ? 'opacity-100 font-bold' : 'opacity-70'}`}>
+        <p className={`text-[10px] uppercase tracking-wider text-white truncate transition-opacity duration-500 ${isActive ? 'opacity-100 font-bold' : 'opacity-70'}`}>
           {wedding.couple}
         </p>
       </div>
@@ -152,6 +158,7 @@ const CarouselItem = memo(({ wedding, isActive, onClick, onHover, index }: { wed
 
 export default function CinematicHome() {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
 
   // Preload images into browser cache instantly
   useEffect(() => {
@@ -160,6 +167,17 @@ export default function CinematicHome() {
       img.src = w.image;
     });
   }, []);
+
+  // Auto-Play Logic - Calm & Fluid
+  useEffect(() => {
+    if (isHovering) return; // Pause on hover
+
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % weddings.length);
+    }, 4000); // 4 seconds for a calm pace
+
+    return () => clearInterval(interval);
+  }, [isHovering]);
 
   const activeWedding = weddings[activeSlide];
 
@@ -173,6 +191,18 @@ export default function CinematicHome() {
 
   const visibleWeddings = getVisibleWeddings();
 
+  // Swipe Handler
+  const handleDragEnd = (event: any, info: any) => {
+    const swipeThreshold = 50;
+    if (info.offset.x < -swipeThreshold) {
+      // Swipe Left -> Next
+      setActiveSlide((prev) => (prev + 1) % weddings.length);
+    } else if (info.offset.x > swipeThreshold) {
+      // Swipe Right -> Prev
+      setActiveSlide((prev) => (prev - 1 + weddings.length) % weddings.length);
+    }
+  };
+
   return (
     <div className="relative h-screen w-full overflow-hidden bg-black font-sans text-white">
       
@@ -185,9 +215,9 @@ export default function CinematicHome() {
         {weddings.map((wedding, index) => (
           <div 
             key={wedding.id}
-            className={`absolute inset-0 h-full w-full transition-opacity duration-700 ease-in-out ${index === activeSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+            className={`absolute inset-0 h-full w-full transition-opacity duration-[1500ms] ease-in-out ${index === activeSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
           >
-            <div className={`absolute inset-0 transition-transform duration-[10000ms] ease-linear ${index === activeSlide ? 'scale-110' : 'scale-100'}`}>
+            <div className={`absolute inset-0 transition-transform duration-[15000ms] ease-linear ${index === activeSlide ? 'scale-110' : 'scale-100'}`}>
                 <img
                     src={wedding.image}
                     alt={wedding.couple}
@@ -215,7 +245,7 @@ export default function CinematicHome() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -10, opacity: 0 }}
-              transition={{ duration: 0.35, ease: "easeOut" }} 
+              transition={{ duration: 0.6, ease: "easeOut" }} 
               className="pointer-events-auto"
             >
               <div className="flex items-center gap-3 text-sm md:text-base tracking-[0.2em] uppercase text-white/70 mb-4 md:mb-6">
@@ -248,9 +278,17 @@ export default function CinematicHome() {
 
         {/* CAROUSEL (Bottom Right) */}
         <div className="flex flex-col justify-end lg:items-end lg:pb-12 pointer-events-none z-40">
-          <div className="pointer-events-auto flex gap-4 overflow-hidden pb-4 pt-12 pl-1 mask-gradient-r">
+          <motion.div 
+            className="pointer-events-auto flex gap-4 overflow-hidden pb-4 pt-12 pl-1 mask-gradient-r touch-pan-y"
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={handleDragEnd}
+          >
              {/* Render only visible window */}
-             <AnimatePresence mode="popLayout">
+             <AnimatePresence mode="popLayout" initial={false}>
                 {visibleWeddings.map((wedding, i) => (
                     <CarouselItem 
                         key={wedding.id}
@@ -262,7 +300,7 @@ export default function CinematicHome() {
                     />
                 ))}
              </AnimatePresence>
-          </div>
+          </motion.div>
           
           <div className="flex items-center justify-between mt-6 lg:ml-auto lg:pr-2 lg:w-full pointer-events-auto">
              {/* Progress Dots - Show all 10 to indicate total progress */}
