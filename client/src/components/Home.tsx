@@ -114,18 +114,18 @@ const weddings: WeddingItem[] = [
   }
 ];
 
-// MEMOIZED CAROUSEL ITEM to prevent unnecessary re-renders
-const CarouselItem = memo(({ wedding, isActive, onClick, onHover }: { wedding: WeddingItem, isActive: boolean, onClick: () => void, onHover: () => void }) => {
+// MEMOIZED CAROUSEL ITEM
+const CarouselItem = memo(({ wedding, isActive, onClick, onHover, index }: { wedding: WeddingItem, isActive: boolean, onClick: () => void, onHover: () => void, index: number }) => {
   return (
     <motion.div
+      layout // layout prop enables smooth position changes
       onMouseEnter={onHover}
       onClick={onClick}
-      // Use constrained simple variants to avoid heavy calculations
       animate={{ 
         opacity: isActive ? 1 : 0.6, 
         scale: isActive ? 1.05 : 0.95,
       }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.3 }}
       className={`
         relative shrink-0 cursor-pointer overflow-hidden rounded-[4px] 
         h-40 w-28 md:h-56 md:w-36 
@@ -162,6 +162,16 @@ export default function CinematicHome() {
   }, []);
 
   const activeWedding = weddings[activeSlide];
+
+  // Helper to get circular slice of 5 items starting from activeSlide
+  const getVisibleWeddings = () => {
+      return Array.from({ length: 5 }, (_, i) => {
+          const index = (activeSlide + i) % weddings.length;
+          return weddings[index];
+      });
+  };
+
+  const visibleWeddings = getVisibleWeddings();
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-black font-sans text-white">
@@ -238,20 +248,24 @@ export default function CinematicHome() {
 
         {/* CAROUSEL (Bottom Right) */}
         <div className="flex flex-col justify-end lg:items-end lg:pb-12 pointer-events-none z-40">
-          <div className="pointer-events-auto flex gap-4 overflow-x-auto pb-4 pt-12 pl-1 no-scrollbar mask-gradient-r">
-            {weddings.map((wedding, index) => (
-               <CarouselItem 
-                  key={wedding.id}
-                  wedding={wedding} 
-                  isActive={index === activeSlide} 
-                  onClick={() => setActiveSlide(index)} 
-                  onHover={() => setActiveSlide(index)} 
-               />
-            ))}
+          <div className="pointer-events-auto flex gap-4 overflow-hidden pb-4 pt-12 pl-1 mask-gradient-r">
+             {/* Render only visible window */}
+             <AnimatePresence mode="popLayout">
+                {visibleWeddings.map((wedding, i) => (
+                    <CarouselItem 
+                        key={wedding.id}
+                        wedding={wedding} 
+                        isActive={wedding.id === activeWedding.id} 
+                        onClick={() => setActiveSlide((weddings.indexOf(wedding)))} 
+                        onHover={() => setActiveSlide((weddings.indexOf(wedding)))}
+                        index={i} 
+                    />
+                ))}
+             </AnimatePresence>
           </div>
           
           <div className="flex items-center justify-between mt-6 lg:ml-auto lg:pr-2 lg:w-full pointer-events-auto">
-             {/* Simple Dots */}
+             {/* Progress Dots - Show all 10 to indicate total progress */}
              <div className="flex items-center gap-3 lg:ml-auto">
                 {weddings.map((_, i) => (
                     <div 
@@ -268,13 +282,10 @@ export default function CinematicHome() {
                 ))}
              </div>
              
-             {/* Styled Counter */}
+             {/* Styled Counter - Number Only as requested */}
              <div className="pl-6 flex items-baseline gap-2 text-white/90">
-                 <span className="font-serif italic text-4xl leading-none">
+                 <span className="font-serif italic text-5xl leading-none">
                      {activeSlide + 1}
-                 </span>
-                 <span className="text-sm font-light opacity-50">
-                     / {weddings.length}
                  </span>
              </div>
           </div>
