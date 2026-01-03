@@ -178,9 +178,10 @@ export default function CinematicHome() {
   useEffect(() => {
     if (isHovering) return; 
 
+    // Faster auto-play (2 seconds)
     const interval = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % weddings.length);
-    }, 4000); 
+    }, 2000); 
 
     return () => clearInterval(interval);
   }, [isHovering]);
@@ -215,9 +216,10 @@ export default function CinematicHome() {
         {weddings.map((wedding, index) => (
           <div 
             key={wedding.id}
-            className={`absolute inset-0 h-full w-full transition-opacity duration-[1500ms] ease-in-out ${index === previewSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+            // Faster fade (700ms) for snappy but premium feel
+            className={`absolute inset-0 h-full w-full transition-opacity duration-[700ms] ease-in-out ${index === previewSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
           >
-            <div className={`absolute inset-0 transition-transform duration-[15000ms] ease-linear ${index === previewSlide ? 'scale-110' : 'scale-100'}`}>
+            <div className={`absolute inset-0 transition-transform duration-[10000ms] ease-linear ${index === previewSlide ? 'scale-110' : 'scale-100'}`}>
                 <img
                     src={wedding.image}
                     alt={wedding.couple}
@@ -244,7 +246,7 @@ export default function CinematicHome() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -10, opacity: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }} 
+              transition={{ duration: 0.5, ease: "easeOut" }} 
               className="pointer-events-auto"
             >
               <div className="flex items-center gap-3 text-sm md:text-base tracking-[0.2em] uppercase text-white/70 mb-4 md:mb-6">
@@ -318,10 +320,10 @@ export default function CinematicHome() {
                 ))}
              </div>
              
-             {/* Styled Counter */}
+             {/* Styled Counter - Updates on HOVER (previewSlide) */}
              <div className="pl-6 flex items-baseline gap-2 text-white/90">
-                 <span className="font-serif italic text-5xl leading-none">
-                     {activeSlide + 1}
+                 <span className="font-serif italic text-5xl leading-none transition-all duration-300">
+                     {previewSlide + 1}
                  </span>
              </div>
           </div>
