@@ -1,23 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, MapPin } from "lucide-react";
 
-// Local Assets
-import udaipurImg from "../assets/images/home/udaipur.png";
-import mussoorieImg from "../assets/images/home/mussoorie.png";
-import goaImg from "../assets/images/home/goa.png";
-import keralaImg from "../assets/images/home/kerala.png";
-// Re-using images for demo purposes to fill 6 slots
-import udaipurImg2 from "../assets/images/home/udaipur.png";
-import mussoorieImg2 from "../assets/images/home/mussoorie.png";
+// Local Optimized Assets (WebP)
+import udaipurBg from "../assets/images/home/udaipur.webp";
+import udaipurThumb from "../assets/images/home/udaipur_thumb.webp";
+import mussoorieBg from "../assets/images/home/mussoorie.webp";
+import mussoorieThumb from "../assets/images/home/mussoorie_thumb.webp";
+import goaBg from "../assets/images/home/goa.webp";
+import goaThumb from "../assets/images/home/goa_thumb.webp";
+import keralaBg from "../assets/images/home/kerala.webp";
+import keralaThumb from "../assets/images/home/kerala_thumb.webp";
 
-// Wedding Data structure: Video Removed, only Static High-Res Images
+// Re-using assets for demo 
+import jaipurBg from "../assets/images/home/udaipur.webp";
+import jaipurThumb from "../assets/images/home/udaipur_thumb.webp";
+import jodhpurBg from "../assets/images/home/mussoorie.webp";
+import jodhpurThumb from "../assets/images/home/mussoorie_thumb.webp";
+
+// Wedding Data structure: Separate Background & Thumbnail for Performance
 interface WeddingItem {
   id: number;
   couple: string;
   location: string;
   desc: string;
-  image: string;
+  image: string;      // High Res Background (1080p WebP)
+  thumbnail: string;  // Low Res Thumbnail (400px WebP)
 }
 
 const weddings: WeddingItem[] = [
@@ -26,76 +34,91 @@ const weddings: WeddingItem[] = [
     couple: "Aditi & Vihaan",
     location: "Udaipur, Rajasthan",
     desc: "A royal heritage celebration.",
-    image: udaipurImg,
+    image: udaipurBg,
+    thumbnail: udaipurThumb,
   },
   {
     id: 2,
     couple: "Karan & Riya",
     location: "Mussoorie, Uttarakhand",
     desc: "Mountains, mist, and memories.",
-    image: mussoorieImg,
+    image: mussoorieBg,
+    thumbnail: mussoorieThumb,
   },
   {
     id: 3,
     couple: "Ishaan & Myra",
     location: "Goa, India",
     desc: "Sun, sand, and sacred vows.",
-    image: goaImg,
+    image: goaBg,
+    thumbnail: goaThumb,
   },
   {
     id: 4,
     couple: "Siddharth & Ananya",
     location: "Kerala, India",
     desc: "Backwaters and new beginnings.",
-    image: keralaImg, 
+    image: keralaBg,
+    thumbnail: keralaThumb, 
   },
    {
     id: 5,
     couple: "Arjun & Zara",
     location: "Jaipur, Rajasthan",
     desc: "Pink city, golden moments.",
-    image: udaipurImg2, // Reusing for consistent visual
+    image: jaipurBg, 
+    thumbnail: jaipurThumb,
   },
   {
     id: 6,
     couple: "Vikram & Pooja",
     location: "Jodhpur, Rajasthan",
     desc: "Under the blue city sky.",
-    image: mussoorieImg2, // Reusing for consistent visual
+    image: jodhpurBg, 
+    thumbnail: jodhpurThumb,
   }
 ];
 
 export default function CinematicHome() {
   const [activeSlide, setActiveSlide] = useState(0);
 
+  // Preload images for instant switching
+  useEffect(() => {
+    weddings.forEach((w) => {
+      const img = new Image();
+      img.src = w.image;
+    });
+  }, []);
+
   const activeWedding = weddings[activeSlide];
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-black font-sans text-white">
-      {/* BACKGROUND LAYER - Crossfade Animation */}
+      {/* BACKGROUND LAYER - Fast Crossfade */}
       <div className="absolute inset-0 z-0">
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.div
             key={activeWedding.id}
             className="absolute inset-0 h-full w-full overflow-hidden"
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }} // Slow Ken Burns effect
+            initial={{ opacity: 0, scale: 1.05 }} // Reduce scale movement to save GPU
+            animate={{ opacity: 1, scale: 1 }} 
             exit={{ opacity: 0 }}
             transition={{ 
-                opacity: { duration: 1.2, ease: "easeInOut" }, // Slower, smoother fade
-                scale: { duration: 10, ease: "linear" } 
+                opacity: { duration: 0.5, ease: "linear" }, // Faster fade (0.5s)
+                scale: { duration: 4, ease: "linear" } 
             }}
           >
             <img
                 src={activeWedding.image}
                 alt={activeWedding.couple}
                 className="h-full w-full object-cover opacity-60"
+                decoding="async"
             />
             {/* Overlay for text readability */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10" />
             
-            {/* Optional Grain for cinematic feel */}
-            <div className="absolute inset-0 pointer-events-none opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay"></div>
+            {/* Reduced noise opacity for performance */}
+            <div className="absolute inset-0 pointer-events-none opacity-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay"></div>
           </motion.div>
         </AnimatePresence>
       </div>
@@ -108,13 +131,14 @@ export default function CinematicHome() {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeWedding.id}
-              initial={{ y: 30, opacity: 0, filter: "blur(10px)" }}
-              animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-              exit={{ y: -20, opacity: 0, filter: "blur(5px)" }}
-              transition={{ duration: 0.8, ease: "circOut" }}
+              // Removed Blur filter which is very expensive for browser paint
+              initial={{ y: 20, opacity: 0 }} 
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -10, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }} // Very fast text transition
               className="pointer-events-auto"
             >
-              <div className="flex items-center gap-3 text-sm md:text-base tracking-[0.2em] uppercase text-white/70 mb-6">
+              <div className="flex items-center gap-3 text-sm md:text-base tracking-[0.2em] uppercase text-white/70 mb-4 md:mb-6">
                 <MapPin className="w-4 h-4 text-accent-rose" />
                 <span>{activeWedding.location}</span>
                 <span className="w-12 h-[1px] bg-white/20 inline-block ml-2"/>
@@ -124,14 +148,14 @@ export default function CinematicHome() {
                 {activeWedding.couple}
               </h1>
               
-              <p className="mt-8 max-w-lg text-lg text-white/70 font-light leading-relaxed tracking-wide">
+              <p className="mt-6 md:mt-8 max-w-lg text-lg text-white/70 font-light leading-relaxed tracking-wide">
                 {activeWedding.desc}
               </p>
 
               <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="mt-12 flex items-center gap-4 group cursor-pointer"
+                className="mt-8 md:mt-12 flex items-center gap-4 group cursor-pointer"
               >
                   <div className="h-14 w-14 rounded-full border border-white/20 flex items-center justify-center backdrop-blur-md group-hover:bg-white/10 transition-all duration-300">
                       <Play className="h-5 w-5 fill-white text-white group-hover:scale-110 transition-transform" />
@@ -154,20 +178,20 @@ export default function CinematicHome() {
                   key={wedding.id}
                   onMouseEnter={() => setActiveSlide(index)}
                   onClick={() => setActiveSlide(index)}
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0, scale: isActive ? 1.05 : 0.95, opacity: isActive ? 1 : 0.5 }}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: isActive ? 1 : 0.6, x: 0, scale: isActive ? 1.05 : 0.95 }}
                   whileHover={{ scale: 1.05, opacity: 1 }}
                   whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.4 }}
+                  transition={{ duration: 0.2 }} // Instant snap
                   className={`
                     relative shrink-0 cursor-pointer overflow-hidden rounded-[4px] 
                     h-40 w-28 md:h-56 md:w-36 
-                    transition-all duration-500
-                    ${isActive ? 'border-2 border-white/80 shadow-[0_0_30px_rgba(0,0,0,0.5)]' : 'border border-white/10 grayscale hover:grayscale-0'}
+                    transition-all duration-300
+                    ${isActive ? 'border-2 border-white/80 shadow-[0_0_20px_rgba(0,0,0,0.4)]' : 'border border-white/10 grayscale hover:grayscale-0'}
                   `}
                 >
                   <img
-                    src={wedding.image}
+                    src={wedding.thumbnail} // Use efficient thumbnail
                     alt={wedding.couple}
                     className="h-full w-full object-cover"
                     loading="eager"
@@ -192,11 +216,11 @@ export default function CinematicHome() {
                     key={i} 
                     onMouseEnter={() => setActiveSlide(i)}
                     onClick={() => setActiveSlide(i)}
-                    className="group relative py-2 outline-none" // increase clickable area
+                    className="group relative py-2 outline-none" 
                  >
                     <div className={`
-                        transition-all duration-500 rounded-full 
-                        ${i === activeSlide ? "w-10 bg-white shadow-[0_0_15px_rgba(255,255,255,0.4)]" : "w-2 bg-white/20 group-hover:bg-white/60"}
+                        transition-all duration-300 rounded-full 
+                        ${i === activeSlide ? "w-10 bg-white shadow-lg" : "w-2 bg-white/20 group-hover:bg-white/60"}
                         h-1
                     `} />
                  </motion.button>
