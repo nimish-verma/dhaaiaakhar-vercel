@@ -115,7 +115,7 @@ const weddings: WeddingItem[] = [
 ];
 
 // MEMOIZED CAROUSEL ITEM - Wrapper/Inner Architecture
-const CarouselItem = memo(({ wedding, isActive, onClick, onHover, index }: { wedding: WeddingItem, isActive: boolean, onClick: () => void, onHover: () => void, index: number }) => {
+const CarouselItem = memo(({ wedding, isActive, isPreview, onClick, onHover, index }: { wedding: WeddingItem, isActive: boolean, isPreview: boolean, onClick: () => void, onHover: () => void, index: number }) => {
   return (
     <motion.div
       layout // Wrapper handles Layout Position ONLY
@@ -126,12 +126,13 @@ const CarouselItem = memo(({ wedding, isActive, onClick, onHover, index }: { wed
          // Inner handles visual Scale/Border ONLY
          onMouseEnter={onHover}
          onClick={onClick}
+         whileHover={{ scale: 1.05, opacity: 1, filter: 'grayscale(0%)', borderWidth: 2, borderColor: 'rgba(255,255,255,0.8)' }} // Local Pop Interaction
          animate={{ 
-            opacity: isActive ? 1 : 0.6, 
-            scale: isActive ? 1.05 : 0.95, // Scale happens inside, doesn't affect layout flow
-            filter: isActive ? 'grayscale(0%)' : 'grayscale(100%)',
-            borderWidth: isActive ? 2 : 1,
-            borderColor: isActive ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.1)',
+            opacity: isPreview ? 1 : 0.6, 
+            scale: isPreview ? 1.05 : 0.95, // Scale matches active state
+            filter: isPreview ? 'grayscale(0%)' : 'grayscale(100%)',
+            borderWidth: isPreview ? 2 : 1,
+            borderColor: isPreview ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.1)',
          }}
          transition={{ duration: 0.4, ease: "easeOut" }}
          className="w-full h-full rounded-[4px] overflow-hidden cursor-pointer shadow-2xl bg-black"
@@ -146,7 +147,7 @@ const CarouselItem = memo(({ wedding, isActive, onClick, onHover, index }: { wed
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none" />
         <div className="absolute bottom-3 left-3 right-3 pointer-events-none">
-          <p className={`text-[10px] uppercase tracking-wider text-white truncate transition-opacity duration-300 ${isActive ? 'opacity-100 font-bold' : 'opacity-70'}`}>
+          <p className={`text-[10px] uppercase tracking-wider text-white truncate transition-opacity duration-300 ${isPreview ? 'opacity-100 font-bold' : 'opacity-70'}`}>
             {wedding.couple}
           </p>
         </div>
@@ -156,10 +157,18 @@ const CarouselItem = memo(({ wedding, isActive, onClick, onHover, index }: { wed
 });
 
 export default function CinematicHome() {
-  const [activeSlide, setActiveSlide] = useState(0);
+  const [activeSlide, setActiveSlide] = useState(0); // Controls the Sliding Window (Carousel position)
+  const [previewSlide, setPreviewSlide] = useState(0); // Controls Background & Highlighting
   const [isHovering, setIsHovering] = useState(false);
 
-  // Preload images into browser cache instantly
+  // Sync preview with active slide when not hovering
+  useEffect(() => {
+    if (!isHovering) {
+      setPreviewSlide(activeSlide);
+    }
+  }, [activeSlide, isHovering]);
+
+  // Preload images
   useEffect(() => {
     weddings.forEach((w) => {
       const img = new Image();
@@ -167,18 +176,18 @@ export default function CinematicHome() {
     });
   }, []);
 
-  // Auto-Play Logic - Calm & Fluid
+  // Auto-Play Logic - Moves the Window
   useEffect(() => {
-    if (isHovering) return; // Pause on hover
+    if (isHovering) return; 
 
     const interval = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % weddings.length);
-    }, 4000); // 4 seconds for a calm pace
+    }, 4000); 
 
     return () => clearInterval(interval);
   }, [isHovering]);
 
-  const activeWedding = weddings[activeSlide];
+  const activeWedding = weddings[previewSlide]; // Background depends on PREVIEW
 
   // Helper to get circular slice of 5 items starting from activeSlide
   const getVisibleWeddings = () => {
@@ -203,17 +212,14 @@ export default function CinematicHome() {
   return (
     <div className="relative h-screen w-full overflow-hidden bg-black font-sans text-white">
       
-      {/* 
-          OPTIMIZED BACKGROUND STACK 
-          Opacity toggle only. No mounting/unmounting.
-      */}
+      {/* BACKGROUND STACK - Controlled by previewSlide */}
       <div className="absolute inset-0 z-0">
         {weddings.map((wedding, index) => (
           <div 
             key={wedding.id}
-            className={`absolute inset-0 h-full w-full transition-opacity duration-[1500ms] ease-in-out ${index === activeSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+            className={`absolute inset-0 h-full w-full transition-opacity duration-[1500ms] ease-in-out ${index === previewSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
           >
-            <div className={`absolute inset-0 transition-transform duration-[15000ms] ease-linear ${index === activeSlide ? 'scale-110' : 'scale-100'}`}>
+            <div className={`absolute inset-0 transition-transform duration-[15000ms] ease-linear ${index === previewSlide ? 'scale-110' : 'scale-100'}`}>
                 <img
                     src={wedding.image}
                     alt={wedding.couple}
@@ -271,7 +277,7 @@ export default function CinematicHome() {
           </AnimatePresence>
         </div>
 
-        {/* CAROUSEL - REMOVED AnimatePresence to ensure exactly 5 items */}
+        {/* CAROUSEL */}
         <div className="flex flex-col justify-end lg:items-end lg:pb-12 pointer-events-none z-40">
           <motion.div 
             className="pointer-events-auto flex gap-4 overflow-hidden pb-4 pt-12 pl-1 mask-gradient-r touch-pan-y"
@@ -286,21 +292,23 @@ export default function CinematicHome() {
                     <CarouselItem 
                         key={wedding.id}
                         wedding={wedding} 
-                        isActive={wedding.id === activeWedding.id} 
+                        isActive={wedding.id === activeWedding.id}
+                        isPreview={wedding.id === activeWedding.id}
                         onClick={() => setActiveSlide((weddings.indexOf(wedding)))} 
-                        onHover={() => setActiveSlide((weddings.indexOf(wedding)))}
+                        onHover={() => setPreviewSlide((weddings.indexOf(wedding)))}
                         index={i} 
                     />
                 ))}
           </motion.div>
           
           <div className="flex items-center justify-between mt-6 lg:ml-auto lg:pr-2 lg:w-full pointer-events-auto">
-             {/* Progress Dots - Show all 10 to indicate total progress */}
+             {/* Progress Dots */}
              <div className="flex items-center gap-3 lg:ml-auto">
                 {weddings.map((_, i) => (
                     <div 
                         key={i} 
-                        onMouseEnter={() => setActiveSlide(i)}
+                        onMouseEnter={() => setPreviewSlide(i)} // PREVIEW only on hover
+                        onClick={() => setActiveSlide(i)}       // ACTIVATE on click
                         className="group relative py-2 outline-none cursor-pointer" 
                     >
                         <div className={`
@@ -312,7 +320,7 @@ export default function CinematicHome() {
                 ))}
              </div>
              
-             {/* Styled Counter - Number Only as requested */}
+             {/* Styled Counter */}
              <div className="pl-6 flex items-baseline gap-2 text-white/90">
                  <span className="font-serif italic text-5xl leading-none">
                      {activeSlide + 1}
