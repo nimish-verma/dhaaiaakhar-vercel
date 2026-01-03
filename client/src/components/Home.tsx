@@ -1,16 +1,23 @@
-
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, MapPin } from "lucide-react";
 
-// Wedding Data structure: Video + Static Poster Image
+// Local Assets
+import udaipurImg from "../assets/images/home/udaipur.png";
+import mussoorieImg from "../assets/images/home/mussoorie.png";
+import goaImg from "../assets/images/home/goa.png";
+import keralaImg from "../assets/images/home/kerala.png";
+// Re-using images for demo purposes to fill 6 slots
+import udaipurImg2 from "../assets/images/home/udaipur.png";
+import mussoorieImg2 from "../assets/images/home/mussoorie.png";
+
+// Wedding Data structure: Video Removed, only Static High-Res Images
 interface WeddingItem {
   id: number;
   couple: string;
   location: string;
   desc: string;
-  src: string; // Video URL
-  thumbnailSrc: string; // Static Image for slider & video poster
+  image: string;
 }
 
 const weddings: WeddingItem[] = [
@@ -19,70 +26,49 @@ const weddings: WeddingItem[] = [
     couple: "Aditi & Vihaan",
     location: "Udaipur, Rajasthan",
     desc: "A royal heritage celebration.",
-    src: "https://videos.pexels.com/video-files/5532772/5532772-hd_1080_1920_25fps.mp4",
-    thumbnailSrc: "https://images.pexels.com/photos/5532772/pexels-photo-5532772.jpeg?auto=compress&cs=tinysrgb&w=600",
+    image: udaipurImg,
   },
   {
     id: 2,
     couple: "Karan & Riya",
     location: "Mussoorie, Uttarakhand",
     desc: "Mountains, mist, and memories.",
-    src: "https://videos.pexels.com/video-files/4324121/4324121-hd_1080_1920_30fps.mp4",
-    thumbnailSrc: "https://images.pexels.com/photos/4324121/pexels-photo-4324121.jpeg?auto=compress&cs=tinysrgb&w=600",
+    image: mussoorieImg,
   },
   {
     id: 3,
     couple: "Ishaan & Myra",
     location: "Goa, India",
     desc: "Sun, sand, and sacred vows.",
-    src: "https://videos.pexels.com/video-files/3692637/3692637-hd_1920_1080_25fps.mp4",
-    thumbnailSrc: "https://images.pexels.com/photos/3692637/pexels-photo-3692637.jpeg?auto=compress&cs=tinysrgb&w=600",
+    image: goaImg,
   },
   {
     id: 4,
-    couple: "Arjun & Zara",
-    location: "Jaipur, Rajasthan",
-    desc: "Pink city, golden moments.",
-    src: "https://videos.pexels.com/video-files/3196238/3196238-hd_1920_1080_25fps.mp4",
-    thumbnailSrc: "https://images.pexels.com/photos/3196238/pexels-photo-3196238.jpeg?auto=compress&cs=tinysrgb&w=600",
-  },
-  {
-    id: 5,
     couple: "Siddharth & Ananya",
     location: "Kerala, India",
     desc: "Backwaters and new beginnings.",
-    src: "https://videos.pexels.com/video-files/4993136/4993136-hd_1920_1080_30fps.mp4", 
-    thumbnailSrc: "https://images.pexels.com/photos/4993136/pexels-photo-4993136.jpeg?auto=compress&cs=tinysrgb&w=600",
+    image: keralaImg, 
+  },
+   {
+    id: 5,
+    couple: "Arjun & Zara",
+    location: "Jaipur, Rajasthan",
+    desc: "Pink city, golden moments.",
+    image: udaipurImg2, // Reusing for consistent visual
   },
   {
     id: 6,
     couple: "Vikram & Pooja",
     location: "Jodhpur, Rajasthan",
     desc: "Under the blue city sky.",
-    src: "https://videos.pexels.com/video-files/8056269/8056269-hd_1920_1080_25fps.mp4",
-    thumbnailSrc: "https://images.pexels.com/photos/8056269/pexels-photo-8056269.jpeg?auto=compress&cs=tinysrgb&w=600",
+    image: mussoorieImg2, // Reusing for consistent visual
   }
 ];
 
 export default function CinematicHome() {
   const [activeSlide, setActiveSlide] = useState(0);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const activeWedding = weddings[activeSlide];
-
-  // Debounced hover handler
-  const handleHover = (index: number) => {
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    hoverTimeoutRef.current = setTimeout(() => {
-      setActiveSlide(index);
-    }, 50);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    };
-  }, []);
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-black font-sans text-white">
@@ -96,22 +82,13 @@ export default function CinematicHome() {
             animate={{ opacity: 1, scale: 1 }} // Slow Ken Burns effect
             exit={{ opacity: 0 }}
             transition={{ 
-                opacity: { duration: 0.8, ease: "easeInOut" },
-                scale: { duration: 8, ease: "linear" } 
+                opacity: { duration: 1.2, ease: "easeInOut" }, // Slower, smoother fade
+                scale: { duration: 10, ease: "linear" } 
             }}
           >
-            {/* 
-               PERFORMANCE OPTIMIZATION: 
-               Use poster for immediate display.
-               Video autoPlays but since it's the ONLY main video, bandwidth is focused here.
-            */}
-            <video
-                src={activeWedding.src}
-                poster={activeWedding.thumbnailSrc}
-                autoPlay
-                muted
-                loop
-                playsInline
+            <img
+                src={activeWedding.image}
+                alt={activeWedding.couple}
                 className="h-full w-full object-cover opacity-60"
             />
             {/* Overlay for text readability */}
@@ -134,7 +111,7 @@ export default function CinematicHome() {
               initial={{ y: 30, opacity: 0, filter: "blur(10px)" }}
               animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
               exit={{ y: -20, opacity: 0, filter: "blur(5px)" }}
-              transition={{ duration: 0.6, ease: "circOut" }}
+              transition={{ duration: 0.8, ease: "circOut" }}
               className="pointer-events-auto"
             >
               <div className="flex items-center gap-3 text-sm md:text-base tracking-[0.2em] uppercase text-white/70 mb-6">
@@ -167,7 +144,7 @@ export default function CinematicHome() {
 
         {/* CAROUSEL (Bottom Right) */}
         <div className="flex flex-col justify-end lg:items-end lg:pb-12 pointer-events-none">
-          {/* Video Cards Slider - NOW WITH STATIC IMAGES FOR PERFORMANCE */}
+          {/* Card Slider */}
           <div className="pointer-events-auto flex gap-4 overflow-x-auto pb-4 pt-12 pl-1 no-scrollbar mask-gradient-r">
             {weddings.map((wedding, index) => {
               const isActive = index === activeSlide;
@@ -175,13 +152,13 @@ export default function CinematicHome() {
               return (
                 <motion.div
                   key={wedding.id}
-                  onMouseEnter={() => handleHover(index)}
+                  onMouseEnter={() => setActiveSlide(index)}
                   onClick={() => setActiveSlide(index)}
                   initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: isActive ? 1 : 0.7, x: 0, scale: isActive ? 1.05 : 0.95 }}
+                  animate={{ opacity: 1, x: 0, scale: isActive ? 1.05 : 0.95, opacity: isActive ? 1 : 0.5 }}
                   whileHover={{ scale: 1.05, opacity: 1 }}
                   whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.4 }}
                   className={`
                     relative shrink-0 cursor-pointer overflow-hidden rounded-[4px] 
                     h-40 w-28 md:h-56 md:w-36 
@@ -189,12 +166,11 @@ export default function CinematicHome() {
                     ${isActive ? 'border-2 border-white/80 shadow-[0_0_30px_rgba(0,0,0,0.5)]' : 'border border-white/10 grayscale hover:grayscale-0'}
                   `}
                 >
-                  {/* OPTIMIZATION: Use Image Thumbnail instead of Video */}
                   <img
-                    src={wedding.thumbnailSrc}
+                    src={wedding.image}
                     alt={wedding.couple}
                     className="h-full w-full object-cover"
-                    loading="lazy"
+                    loading="eager"
                   />
                   
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
@@ -214,7 +190,7 @@ export default function CinematicHome() {
              {weddings.map((_, i) => (
                  <motion.button 
                     key={i} 
-                    onMouseEnter={() => handleHover(i)}
+                    onMouseEnter={() => setActiveSlide(i)}
                     onClick={() => setActiveSlide(i)}
                     className="group relative py-2 outline-none" // increase clickable area
                  >
@@ -223,14 +199,6 @@ export default function CinematicHome() {
                         ${i === activeSlide ? "w-10 bg-white shadow-[0_0_15px_rgba(255,255,255,0.4)]" : "w-2 bg-white/20 group-hover:bg-white/60"}
                         h-1
                     `} />
-                    {/* Hover tooltip for dot */}
-                    <div className={`
-                        absolute bottom-full left-1/2 -translate-x-1/2 mb-2 
-                        text-[9px] uppercase tracking-widest text-white/50 whitespace-nowrap
-                        opacity-0 group-hover:opacity-100 transition-opacity duration-300
-                    `}>
-                        {weddings[i].couple}
-                    </div>
                  </motion.button>
              ))}
           </div>
