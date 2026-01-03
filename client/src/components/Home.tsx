@@ -158,8 +158,18 @@ export default function CinematicHome() {
   const [activeSlide, setActiveSlide] = useState(0); // Controls the Sliding Window (Carousel position)
   const [previewSlide, setPreviewSlide] = useState(0); // Controls Background & Highlighting
   const [isHovering, setIsHovering] = useState(false);
+  
+  // Responsive check for slide width calculation
+  const [isDesktop, setIsDesktop] = useState(true);
 
-  // Sync preview with active slide when not hovering
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768);
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
+
+  // Sync preview with active slide when not hovering the CAROUSEL (dots behave differently)
   useEffect(() => {
     if (!isHovering) {
       setPreviewSlide(activeSlide);
@@ -174,7 +184,7 @@ export default function CinematicHome() {
     });
   }, []);
 
-  // Auto-Play Logic - Moves the Window
+  // Auto-Play Logic
   useEffect(() => {
     if (isHovering) return; 
 
@@ -186,37 +196,31 @@ export default function CinematicHome() {
     return () => clearInterval(interval);
   }, [isHovering]);
 
-  const activeWedding = weddings[previewSlide]; // Background depends on PREVIEW
-
-  // Helper to get circular slice of 5 items starting from activeSlide
-  const getVisibleWeddings = () => {
-      return Array.from({ length: 5 }, (_, i) => {
-          const index = (activeSlide + i) % weddings.length;
-          return weddings[index];
-      });
-  };
-
-  const visibleWeddings = getVisibleWeddings();
+  const activeWedding = weddings[previewSlide]; 
 
   // Swipe Handler
   const handleDragEnd = (event: any, info: any) => {
     const swipeThreshold = 50;
     if (info.offset.x < -swipeThreshold) {
-      setActiveSlide((prev) => (prev + 1) % weddings.length);
+      if (activeSlide < weddings.length - 1) setActiveSlide(prev => prev + 1);
     } else if (info.offset.x > swipeThreshold) {
-      setActiveSlide((prev) => (prev - 1 + weddings.length) % weddings.length);
+      if (activeSlide > 0) setActiveSlide(prev => prev - 1);
     }
   };
+
+  // Calculate Track Translate X
+  // Mobile: w-28 (7rem) + gap-4 (1rem) = 8rem
+  // Desktop: w-36 (9rem) + gap-4 (1rem) = 10rem
+  const trackX = `calc(-${activeSlide} * ${isDesktop ? '10rem' : '8rem'})`;
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-black font-sans text-white">
       
-      {/* BACKGROUND STACK - Controlled by previewSlide */}
+      {/* BACKGROUND STACK */}
       <div className="absolute inset-0 z-0">
         {weddings.map((wedding, index) => (
           <div 
             key={wedding.id}
-            // Faster fade (700ms) for snappy but premium feel
             className={`absolute inset-0 h-full w-full transition-opacity duration-[700ms] ease-in-out ${index === previewSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
           >
             <div className={`absolute inset-0 transition-transform duration-[10000ms] ease-linear ${index === previewSlide ? 'scale-110' : 'scale-100'}`}>
@@ -227,11 +231,9 @@ export default function CinematicHome() {
                     decoding="sync" 
                 />
             </div>
-            {/* Gradient Overlay attached to image container */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10" />
           </div>
         ))}
-         {/* Noise Overlay */}
          <div className="absolute inset-0 z-20 pointer-events-none opacity-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay"></div>
       </div>
 
@@ -277,38 +279,47 @@ export default function CinematicHome() {
           </AnimatePresence>
         </div>
 
-        {/* CAROUSEL */}
+        {/* CAROUSEL CONTAINER */}
         <div className="flex flex-col justify-end lg:items-end lg:pb-12 pointer-events-none z-40">
-          <motion.div 
-            className="pointer-events-auto flex gap-4 overflow-hidden pb-4 pt-12 pl-1 mask-gradient-r touch-pan-y"
-            onMouseEnter={() => setIsHovering(true)}
-            onMouseLeave={() => setIsHovering(false)}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.2}
-            onDragEnd={handleDragEnd}
-          >
-                {visibleWeddings.map((wedding, i) => (
-                    <CarouselItem 
-                        key={wedding.id}
-                        wedding={wedding} 
-                        isActive={wedding.id === activeWedding.id}
-                        isPreview={wedding.id === activeWedding.id}
-                        onClick={() => setActiveSlide((weddings.indexOf(wedding)))} 
-                        onHover={() => setPreviewSlide((weddings.indexOf(wedding)))}
-                        index={i} 
-                    />
-                ))}
-          </motion.div>
+          
+          {/* SCROLLABLE TRACK MASK */}
+          <div className="pointer-events-auto w-full max-w-[calc(100vw-3rem)] lg:max-w-[450px] overflow-hidden mask-gradient-r pb-4 pt-12 pl-1 touch-pan-y">
+            <motion.div 
+              className="flex gap-4 w-max"
+              animate={{ x: trackX }}
+              transition={{ duration: 0.8, ease: "easeInOut" }} // User requested 'very calm, fluid, gentle'
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
+              drag="x"
+              dragConstraints={{ left: -1000, right: 0 }} // Loose constraints, snap logic handles it
+              dragElastic={0.2}
+              onDragEnd={handleDragEnd}
+            >
+                  {weddings.map((wedding, i) => (
+                      <CarouselItem 
+                          key={wedding.id}
+                          wedding={wedding} 
+                          isActive={wedding.id === activeWedding.id}
+                          isPreview={wedding.id === activeWedding.id}
+                          onClick={() => setActiveSlide(i)} 
+                          onHover={() => setPreviewSlide(i)} // Hovering card only updates preview
+                          index={i} 
+                      />
+                  ))}
+            </motion.div>
+          </div>
           
           <div className="flex items-center justify-between mt-6 lg:ml-auto lg:pr-2 lg:w-full pointer-events-auto">
-             {/* Progress Dots */}
+             {/* Progress Dots - HOVER UPDATES CAROUSEL POSITION */}
              <div className="flex items-center gap-3 lg:ml-auto">
                 {weddings.map((_, i) => (
                     <div 
                         key={i} 
-                        onMouseEnter={() => setPreviewSlide(i)} // PREVIEW only on hover
-                        onClick={() => setActiveSlide(i)}       // ACTIVATE on click
+                        onMouseEnter={() => {
+                            setPreviewSlide(i);
+                            setActiveSlide(i); // KEY CHANGE: Dot hover moves the track
+                        }}
+                        onClick={() => setActiveSlide(i)}
                         className="group relative py-2 outline-none" 
                     >
                         <div className={`
