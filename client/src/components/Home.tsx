@@ -27,8 +27,8 @@ const weddings: WeddingItem[] = [
     couple: "Karan & Riya",
     location: "Mussoorie, Uttarakhand",
     desc: "Mountains, mist, and memories.",
-    src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&q=80&w=1920",
-    type: "image",
+    src: "https://videos.pexels.com/video-files/4324121/4324121-hd_1080_1920_30fps.mp4",
+    type: "video",
   },
   {
     id: 3,
@@ -114,7 +114,7 @@ export default function CinematicHome() {
       </div>
 
       {/* FOREGROUND CONTENT */}
-      <div className="relative z-10 grid h-full grid-cols-1 grid-rows-[1fr_auto] p-6 md:p-12 lg:grid-cols-[1fr_450px] lg:grid-rows-1">
+      <div className="relative z-10 grid h-full grid-cols-1 grid-rows-[1fr_auto] p-6 md:p-12 lg:grid-cols-[1fr_450px] lg:grid-rows-1 pointer-events-none">
         
         {/* MAIN TEXT (Bottom Left) */}
         <div className="flex flex-col justify-end pb-20 lg:pb-24 pointer-events-none">
@@ -144,7 +144,7 @@ export default function CinematicHome() {
               <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="mt-10 flex items-center gap-4 group"
+                className="mt-10 flex items-center gap-4 group cursor-pointer"
               >
                   <div className="h-12 w-12 rounded-full border border-white/30 flex items-center justify-center backdrop-blur-md group-hover:bg-white/20 transition-colors">
                       <Play className="h-4 w-4 fill-white text-white" />
@@ -173,7 +173,7 @@ export default function CinematicHome() {
                 <motion.div
                   key={wedding.id}
                   layoutId={`video-container-${wedding.id}`}
-                  onClick={() => setActiveSlide(index)}
+                  onMouseEnter={() => setActiveSlide(index)} // Interaction changed to HOVER
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
                   whileHover={{ y: -10, transition: { duration: 0.2 } }}
@@ -210,11 +210,13 @@ export default function CinematicHome() {
           </div>
           
           {/* Progress Indicators */}
-          <div className="flex gap-2 mt-4 lg:pr-1">
+          <div className="flex gap-2 mt-4 lg:pr-1 pointer-events-auto">
              {weddings.map((_, i) => (
                  <div 
                     key={i} 
-                    className={`h-[2px] transition-all duration-500 ${i === activeSlide ? "w-8 bg-white" : "w-4 bg-white/30"}`}
+                    onMouseEnter={() => setActiveSlide(i)} // Also hoverable
+                    onClick={() => setActiveSlide(i)}
+                    className={`h-[3px] rounded-full transition-all duration-500 cursor-pointer ${i === activeSlide ? "w-12 bg-white" : "w-4 bg-white/30 hover:bg-white/60"}`}
                  />
              ))}
           </div>

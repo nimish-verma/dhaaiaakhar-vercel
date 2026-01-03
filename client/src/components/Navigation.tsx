@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "@/context/ThemeContext";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -7,21 +7,28 @@ import { AnimatePresence, motion } from "framer-motion";
 export default function Navigation() {
   const { theme, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
 
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  // Home page always defaults to "dark mode" style transparency for the cinematic header
+  const isDark = theme === "dark" || isHomePage;
 
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-8 py-4 md:py-6 pointer-events-auto" style={{
-        background: theme === "dark" 
-          ? "linear-gradient(to bottom, rgba(26, 26, 26, 0.9) 0%, rgba(26, 26, 26, 0.5) 70%, rgba(26, 26, 26, 0) 100%)" 
-          : "linear-gradient(to bottom, rgba(245, 245, 245, 0.9) 0%, rgba(245, 245, 245, 0.5) 70%, rgba(245, 245, 245, 0) 100%)",
-        backdropFilter: "blur(2px)",
-        maskImage: "linear-gradient(to bottom, black 80%, transparent 100%)"
+        background: isHomePage
+            ? "linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%)" // Clean cinematic gradient for Home
+            : theme === "dark" 
+                ? "linear-gradient(to bottom, rgba(26, 26, 26, 0.9) 0%, rgba(26, 26, 26, 0.5) 70%, rgba(26, 26, 26, 0) 100%)" 
+                : "linear-gradient(to bottom, rgba(245, 245, 245, 0.9) 0%, rgba(245, 245, 245, 0.5) 70%, rgba(245, 245, 245, 0) 100%)",
+        backdropFilter: isHomePage ? "none" : "blur(2px)",
+        maskImage: isHomePage ? "none" : "linear-gradient(to bottom, black 80%, transparent 100%)"
       }}>
         <div className="flex items-center gap-6">
           <Link to="/" className="text-xl md:text-2xl font-playfair font-light uppercase tracking-[0.2em] hover:opacity-80 transition-opacity" style={{
-            color: "#d4a5a5"
+            color: isHomePage ? "#d4a5a5" : "#d4a5a5" // Always brand color for logo
           }}>
             Dhaiaakar
           </Link>
@@ -30,8 +37,8 @@ export default function Navigation() {
             onClick={toggleTheme}
             className="p-2 rounded-full transition-all duration-300 hover:opacity-80 hidden md:block" // Hidden on mobile to avoid overcrowding header
             style={{
-              backgroundColor: theme === "dark" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
-              color: theme === "dark" ? "white" : "#1a1a1a"
+              backgroundColor: isHomePage ? "rgba(255,255,255,0.1)" : (theme === "dark" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)"),
+              color: isHomePage ? "white" : (theme === "dark" ? "white" : "#1a1a1a")
             }}
             aria-label="Toggle theme"
           >
@@ -45,7 +52,7 @@ export default function Navigation() {
         
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-6 text-xs font-inter uppercase tracking-widest" style={{
-          color: theme === "dark" ? "white" : "#1a1a1a"
+          color: isHomePage ? "white" : (theme === "dark" ? "white" : "#1a1a1a")
         }}>
           <Link to="/films" className="hover:opacity-70 transition-opacity">Films</Link>
           <Link to="/services" className="hover:opacity-70 transition-opacity">Services</Link>
@@ -58,8 +65,8 @@ export default function Navigation() {
             onClick={toggleTheme}
             className="p-2 rounded-full transition-all duration-300 hover:opacity-80"
             style={{
-              backgroundColor: theme === "dark" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
-              color: theme === "dark" ? "white" : "#1a1a1a"
+              backgroundColor: isHomePage ? "rgba(255,255,255,0.1)" : (theme === "dark" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)"),
+              color: isHomePage ? "white" : (theme === "dark" ? "white" : "#1a1a1a")
             }}
           >
              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -68,7 +75,7 @@ export default function Navigation() {
           <button 
             onClick={toggleMenu}
             className="p-1 focus:outline-none"
-            style={{ color: theme === "dark" ? "white" : "#1a1a1a" }}
+            style={{ color: isHomePage ? "white" : (theme === "dark" ? "white" : "#1a1a1a") }}
           >
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
