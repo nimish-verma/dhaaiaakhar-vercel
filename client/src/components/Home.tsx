@@ -17,6 +17,10 @@ import jaipurBg from "../assets/images/home/udaipur.webp";
 import jaipurThumb from "../assets/images/home/udaipur_thumb.webp";
 import jodhpurBg from "../assets/images/home/mussoorie.webp";
 import jodhpurThumb from "../assets/images/home/mussoorie_thumb.webp";
+import rishikeshBg from "../assets/images/home/kerala.webp";
+import rishikeshThumb from "../assets/images/home/kerala_thumb.webp";
+import agraBg from "../assets/images/home/goa.webp";
+import agraThumb from "../assets/images/home/goa_thumb.webp";
 
 interface WeddingItem {
   id: number;
@@ -75,6 +79,38 @@ const weddings: WeddingItem[] = [
     desc: "Under the blue city sky.",
     image: jodhpurBg, 
     thumbnail: jodhpurThumb,
+  },
+  {
+    id: 7,
+    couple: "Rohan & Meera",
+    location: "Rishikesh, Uttarakhand",
+    desc: "Ganga aarti and eternal promises.",
+    image: rishikeshBg, 
+    thumbnail: rishikeshThumb,
+  },
+  {
+    id: 8,
+    couple: "Kabir & Sanya",
+    location: "Agra, Uttar Pradesh",
+    desc: "Love in the shadow of the Taj.",
+    image: agraBg, 
+    thumbnail: agraThumb,
+  },
+  {
+    id: 9,
+    couple: "Arav & Nitya",
+    location: "Udaipur, Rajasthan",
+    desc: "Lakeside whispers of love.",
+    image: udaipurBg, // Reusing
+    thumbnail: udaipurThumb,
+  },
+  {
+    id: 10,
+    couple: "Dev & Diya",
+    location: "Goa, India",
+    desc: "Sunset horizons and joy.",
+    image: goaBg, // Reusing
+    thumbnail: goaThumb,
   }
 ];
 
@@ -214,20 +250,33 @@ export default function CinematicHome() {
             ))}
           </div>
           
-          <div className="flex items-center gap-3 mt-6 lg:pr-2 pointer-events-auto">
-             {weddings.map((_, i) => (
-                 <div 
-                    key={i} 
-                    onMouseEnter={() => setActiveSlide(i)}
-                    className="group relative py-2 outline-none cursor-pointer" 
-                 >
-                    <div className={`
-                        transition-all duration-300 rounded-full 
-                        ${i === activeSlide ? "w-10 bg-white shadow-lg" : "w-2 bg-white/20 group-hover:bg-white/60"}
-                        h-1
-                    `} />
-                 </div>
-             ))}
+          <div className="flex items-center justify-between mt-6 lg:ml-auto lg:pr-2 lg:w-full pointer-events-auto">
+             {/* Simple Dots */}
+             <div className="flex items-center gap-3 lg:ml-auto">
+                {weddings.map((_, i) => (
+                    <div 
+                        key={i} 
+                        onMouseEnter={() => setActiveSlide(i)}
+                        className="group relative py-2 outline-none cursor-pointer" 
+                    >
+                        <div className={`
+                            transition-all duration-300 rounded-full 
+                            ${i === activeSlide ? "w-10 bg-white shadow-lg" : "w-2 bg-white/20 group-hover:bg-white/60"}
+                            h-1
+                        `} />
+                    </div>
+                ))}
+             </div>
+             
+             {/* Styled Counter */}
+             <div className="pl-6 flex items-baseline gap-2 text-white/90">
+                 <span className="font-serif italic text-4xl leading-none">
+                     {activeSlide + 1}
+                 </span>
+                 <span className="text-sm font-light opacity-50">
+                     / {weddings.length}
+                 </span>
+             </div>
           </div>
         </div>
       </div>
