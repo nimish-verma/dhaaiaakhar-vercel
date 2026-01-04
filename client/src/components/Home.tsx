@@ -120,7 +120,12 @@ const CarouselItem = memo(({ wedding, isActive, isPreview, onClick, onHover, ind
       initial={{ x: 100, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: -100, opacity: 0 }}
-      transition={{ duration: 0.8, ease: "easeInOut" }}
+      transition={{ 
+          type: "spring",
+          stiffness: 300,
+          damping: 30,
+          mass: 1
+      }} // Liquid smooth spring physics
       className="relative shrink-0 h-40 w-28 md:h-56 md:w-36"
     >
       <motion.div
@@ -142,8 +147,8 @@ const CarouselItem = memo(({ wedding, isActive, isPreview, onClick, onHover, ind
             borderWidth: isPreview ? 2 : 1,
             borderColor: isPreview ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.1)',
          }}
-         transition={{ duration: 0.4, ease: "easeOut" }}
-         className="w-full h-full rounded-[4px] overflow-hidden shadow-2xl bg-black"
+         transition={{ duration: 0.3 }} // Faster internal state change
+         className="w-full h-full rounded-[4px] overflow-hidden shadow-xl bg-black"
       >
         <img
           src={wedding.thumbnail}
@@ -224,14 +229,15 @@ export default function CinematicHome() {
           <div 
             key={wedding.id}
             // Faster fade (700ms) for snappy but premium feel
-            className={`absolute inset-0 h-full w-full transition-opacity duration-[700ms] ease-in-out ${index === displaySlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+            className={`absolute inset-0 h-full w-full transition-opacity duration-[700ms] ease-in-out will-change-opacity ${index === displaySlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
           >
             <div className={`absolute inset-0 transition-transform duration-[10000ms] ease-linear ${index === displaySlide ? 'scale-110' : 'scale-100'}`}>
                 <img
                     src={wedding.image}
                     alt={wedding.couple}
                     className="h-full w-full object-cover opacity-60"
-                    decoding="sync" 
+                    decoding="async" 
+                    loading="lazy"
                 />
             </div>
             {/* Gradient Overlay attached to image container */}

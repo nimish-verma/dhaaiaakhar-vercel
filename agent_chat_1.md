@@ -1083,3 +1083,23 @@ update hidden.md file to keep whole prompts.
 1099: 3.  **Pushing**: Uploading the branch and the tag to `origin`.
 1100: 
 1101: The project is now safe and versioned!
+1102: 
+1103: ### User Input
+1104: 
+1105: the wwebsite feels sluggish when the carousel is in action, fix this by optimizing the speeds, the motion should feel liquid smooth, highly reactive and very smooth!
+1106: 
+1107: ### Planner Response
+1108: 
+1109: I have optimized the carousel engine to use **Spring Physics** and non-blocking rendering for that "liquid smooth" feel.
+1110: 
+1111: ### **Optimizations Applied:**
+1112: 1.  **Spring Physics**: Replaced the robotic `0.8s` ease-in-out animation with a physics-based spring (`stiffness: 300`, `damping: 30`).
+1113:     *   *Why?* Springs react naturally to interruptions and carry momentum, making the carousel feel "alive" and highly reactive instead of sluggish.
+1114:     
+1115: 2.  **Unblocking the Main Thread**:
+1116:     *   Changed the massive background images to `decoding="async"`.
+1117:     *   Previously, the browser paused everything to decode the next background image. Now, it happens on a parallel thread, so the animation never stutters.
+1118:     
+1119: 3.  **Compositor Hints**: Added `will-change: opacity` to the background layers, telling the browser to keep them ready on the GPU.
+1120: 
+1121: The carousel should now glide effortlessly!
