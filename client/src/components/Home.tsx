@@ -20,13 +20,26 @@ import rishikeshThumb from "../assets/images/home/rishikesh_thumb.webp";
 import agraBg from "../assets/images/home/agra.webp";
 import agraThumb from "../assets/images/home/agra_thumb.webp";
 
+// Local Videos
+import udaipurVid from "../assets/videos/udaipur.mp4";
+import mussoorieVid from "../assets/videos/mussoorie.mp4";
+import goaVid from "../assets/videos/goa.mp4";
+import keralaVid from "../assets/videos/kerala.mp4";
+import jaipurVid from "../assets/videos/jaipur.mp4";
+import jodhpurVid from "../assets/videos/jodhpur.mp4";
+import rishikeshVid from "../assets/videos/rishikesh.mp4";
+import agraVid from "../assets/videos/agra.mp4";
+import udaipurVid2 from "../assets/videos/udaipur2.mp4";
+import goaVid2 from "../assets/videos/goa2.mp4";
+
 interface WeddingItem {
   id: number;
   couple: string;
   location: string;
   desc: string;
   image: string;      
-  thumbnail: string;  
+  thumbnail: string;
+  video: string; 
 }
 
 const weddings: WeddingItem[] = [
@@ -37,6 +50,7 @@ const weddings: WeddingItem[] = [
     desc: "A royal heritage celebration.",
     image: udaipurBg,
     thumbnail: udaipurThumb,
+    video: udaipurVid,
   },
   {
     id: 2,
@@ -45,6 +59,7 @@ const weddings: WeddingItem[] = [
     desc: "Mountains, mist, and memories.",
     image: mussoorieBg,
     thumbnail: mussoorieThumb,
+    video: mussoorieVid,
   },
   {
     id: 3,
@@ -53,6 +68,7 @@ const weddings: WeddingItem[] = [
     desc: "Sun, sand, and sacred vows.",
     image: goaBg,
     thumbnail: goaThumb,
+    video: goaVid,
   },
   {
     id: 4,
@@ -60,7 +76,8 @@ const weddings: WeddingItem[] = [
     location: "Kerala, India",
     desc: "Backwaters and new beginnings.",
     image: keralaBg,
-    thumbnail: keralaThumb, 
+    thumbnail: keralaThumb,
+    video: keralaVid,
   },
    {
     id: 5,
@@ -69,6 +86,7 @@ const weddings: WeddingItem[] = [
     desc: "Pink city, golden moments.",
     image: jaipurBg, 
     thumbnail: jaipurThumb,
+    video: jaipurVid,
   },
   {
     id: 6,
@@ -77,6 +95,7 @@ const weddings: WeddingItem[] = [
     desc: "Under the blue city sky.",
     image: jodhpurBg, 
     thumbnail: jodhpurThumb,
+    video: jodhpurVid,
   },
   {
     id: 7,
@@ -85,6 +104,7 @@ const weddings: WeddingItem[] = [
     desc: "Ganga aarti and eternal promises.",
     image: rishikeshBg, 
     thumbnail: rishikeshThumb,
+    video: rishikeshVid,
   },
   {
     id: 8,
@@ -93,6 +113,7 @@ const weddings: WeddingItem[] = [
     desc: "Love in the shadow of the Taj.",
     image: agraBg, 
     thumbnail: agraThumb,
+    video: agraVid,
   },
   {
     id: 9,
@@ -101,6 +122,7 @@ const weddings: WeddingItem[] = [
     desc: "Lakeside whispers of love.",
     image: udaipurBg, 
     thumbnail: udaipurThumb,
+    video: udaipurVid2,
   },
   {
     id: 10,
@@ -109,6 +131,7 @@ const weddings: WeddingItem[] = [
     desc: "Sunset horizons and joy.",
     image: goaBg, 
     thumbnail: goaThumb,
+    video: goaVid2,
   }
 ];
 
@@ -227,12 +250,26 @@ export default function CinematicHome() {
             className={`absolute inset-0 h-full w-full transition-opacity duration-[700ms] ease-in-out ${index === displaySlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
           >
             <div className={`absolute inset-0 transition-transform duration-[10000ms] ease-linear ${index === displaySlide ? 'scale-110' : 'scale-100'}`}>
+                {/* Poster Image (Always here, acts as fallback/loading state) */}
                 <img
                     src={wedding.image}
                     alt={wedding.couple}
                     className="h-full w-full object-cover opacity-60"
                     decoding="sync" 
                 />
+                
+                {/* Video - Only mounts when active to save resources */}
+                {index === displaySlide && (
+                    <video
+                        src={wedding.video}
+                        poster={wedding.image}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="absolute inset-0 h-full w-full object-cover opacity-60"
+                    />
+                )}
             </div>
             {/* Gradient Overlay attached to image container */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10" />

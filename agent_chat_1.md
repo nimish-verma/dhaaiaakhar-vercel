@@ -1068,4 +1068,32 @@ update hidden.md file to keep whole prompts.
 1083:     *   Simultaneously, the Rightmost (new) card **slides in from the right**.
 1084:     *   The middle cards slide left to fill the gap.
 1085: 
-1086: This creates a continuous, seamless right-to-left flow for *all* 5 visible cards, matching your "one by one transition" requirement.
+1088: This creates a continuous, seamless right-to-left flow for *all* 5 visible cards, matching your "one by one transition" requirement.
+1089: 
+1090: ### User Input
+1091: 
+1092: i wanna do videos on the background of the carousel, wedding related videos, optimized for the webite, loading up the website fast, maintain the hig quality standard of our website.
+1093: 
+1094: ### Planner Response
+1095: 
+1096: I have upgraded the Cinematic Carousel to support **Background Videos** while maintaining extreme performance optimization.
+1097: 
+1098: ### **Video Implementation Strategy**
+1099: To ensure the website remains "fast" and high-quality:
+1100: 1.  **Lazy Execution**: I implemented a logic where the `<video>` tag **only exists for the Active Slide**. 
+1101:     *   *Inactive slides* just show the optimized WebP image.
+1102:     *   *Active slide* shows the image first (instant load), then mounts the video over it. 
+1103:     *   This prevents 10 videos from buffering simultaneously, which causes the lag you hated.
+1104: 
+1105: 2.  **Asset Structure**:
+1106:     *   Created a new folder: `client/src/assets/videos/`.
+1107:     *   Code now imports `udaipur.mp4`, `goa.mp4`, etc.
+1108: 
+1109: ### **Action Required**
+1110: Since high-quality stock videos are large and protected, I have generated **Optimized Placeholder Videos** (simple color loops) so you can see the system working *immediately* without broken links.
+1111: 
+1112: **To finish the look:**
+1113: 1.  Go to `d:\DevPrjs\dhai-changes\dhaaiaakhar-vercel\client\src\assets\videos`
+1114: 2.  Replace the placeholder `udaipur.mp4`, `goa.mp4`, etc. with your actual cinematic wedding clips (keep them under 5MB for best speed).
+1115: 
+1116: The code handles the rest!
