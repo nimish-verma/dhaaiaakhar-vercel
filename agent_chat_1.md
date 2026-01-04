@@ -1103,3 +1103,20 @@ update hidden.md file to keep whole prompts.
 1119: 3.  **Compositor Hints**: Added `will-change: opacity` to the background layers, telling the browser to keep them ready on the GPU.
 1120: 
 1121: The carousel should now glide effortlessly!
+2.  **Unblocking the Main Thread**:
+    *   Changed the massive background images to `decoding="async"`.
+    *   Previously, the browser paused everything to decode the next background image. Now, it happens on a parallel thread, so the animation never stutters.
+    
+3.  **Compositor Hints**: Added `will-change: opacity` to the background layers, telling the browser to keep them ready on the GPU.
+1121: The carousel should now glide effortlessly!
+
+### User Input
+
+update the .md files and push to github
+
+### Planner Response
+
+I have synced the documentation files (`.hidden.md` and `agent_chat_1.md`) with the latest changes and pushed them to GitHub.
+
+1.  **Synced Logs**: Restored missing entries in `.hidden.md` for the recent optimizations and fixes.
+2.  **Pushed**: Code and docs are now up to date on `origin`.
