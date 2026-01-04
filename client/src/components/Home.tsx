@@ -116,15 +116,18 @@ const weddings: WeddingItem[] = [
 const CarouselItem = memo(({ wedding, isActive, isPreview, onClick, onHover, index }: { wedding: WeddingItem, isActive: boolean, isPreview: boolean, onClick: () => void, onHover: () => void, index: number }) => {
   return (
     <motion.div
-      layout // Wrapper handles Layout Position ONLY
-      transition={{ duration: 0.8, ease: "easeInOut" }} // Calm slide
+      layout
+      initial={{ x: 100, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: -100, opacity: 0 }}
+      transition={{ duration: 0.8, ease: "easeInOut" }}
       className="relative shrink-0 h-40 w-28 md:h-56 md:w-36"
     >
       <motion.div
          // Inner handles visual Scale/Border ONLY
          onMouseEnter={onHover}
          onClick={onClick}
-         whileHover={{ scale: 1.05, opacity: 1, filter: 'grayscale(0%)', borderWidth: 2, borderColor: 'rgba(255,255,255,0.8)' }} // Local Pop Interaction
+         whileHover={{ scale: 1.05, opacity: 1, filter: 'grayscale(0%)', borderWidth: 2, borderColor: 'rgba(255,255,255,0.8)' }}
          initial={{ 
             opacity: 0.6, 
             scale: 0.95, 
@@ -134,7 +137,7 @@ const CarouselItem = memo(({ wedding, isActive, isPreview, onClick, onHover, ind
          }}
          animate={{ 
             opacity: isPreview ? 1 : 0.6, 
-            scale: isPreview ? 1.05 : 0.95, // Scale matches active state
+            scale: isPreview ? 1.05 : 0.95, 
             filter: isPreview ? 'grayscale(0%)' : 'grayscale(100%)',
             borderWidth: isPreview ? 2 : 1,
             borderColor: isPreview ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.1)',
@@ -292,6 +295,7 @@ export default function CinematicHome() {
             dragElastic={0.2}
             onDragEnd={handleDragEnd}
           >
+            <AnimatePresence mode="popLayout" initial={false}>
                 {visibleWeddings.map((wedding, i) => (
                     <CarouselItem 
                         key={wedding.id}
@@ -303,6 +307,7 @@ export default function CinematicHome() {
                         index={i} 
                     />
                 ))}
+            </AnimatePresence>
           </motion.div>
           
           <div className="flex items-center justify-between mt-6 lg:ml-auto lg:pr-2 lg:w-full pointer-events-auto">

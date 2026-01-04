@@ -1045,3 +1045,27 @@ update hidden.md file to keep whole prompts.
 1045: ```
 1046: 
 1047: Now, every new card enters the screen **already at 0.95 scale**, matching the rest of the non-active cards perfectly. It will never "pop" unless it is the Leftmost (Active) card or you hover over it.
+1063: 
+1064: ### User Input
+1065: 
+1066: the sliding of the carousel, especially the last element is very bad, it should always go from right to left, maintaing the one by one transition of the 5 picture cards in the front of the carousel
+1067: 
+1068: ### Planner Response
+1069: 
+1070: I have implemented a true "Conveyor Belt" transition to fix the edge cases (first and last elements).
+1071: 
+1072: ### **The Fix: `popLayout` Animation**
+1073: 1.  **The Problem**: Previously, items 2-4 would slide nicely because they persisted in the DOM. But Item 1 would just "vanish" and Item 5 would just "appear" in place. There was no lateral movement for entering/exiting cards.
+1074: 
+1075: 2.  **The Solution**:
+1076:     *   Wrapped the carousel in `AnimatePresence mode="popLayout"`.
+1077:     *   Added explicit **X-Axis Motion** to the `CarouselItem` wrapper:
+1078:         *   **Enter**: `x: 100` (Starts off-screen right) -> `x: 0`
+1079:         *   **Exit**: `x: 0` -> `x: -100` (Slides off-screen left)
+1080:     
+1081: 3.  **Visual Result**:
+1082:     *   When the carousel advances, the Leftmost card physically **slides off to the left** while fading out.
+1083:     *   Simultaneously, the Rightmost (new) card **slides in from the right**.
+1084:     *   The middle cards slide left to fill the gap.
+1085: 
+1086: This creates a continuous, seamless right-to-left flow for *all* 5 visible cards, matching your "one by one transition" requirement.
