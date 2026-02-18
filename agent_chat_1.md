@@ -2,6 +2,8 @@
 
 Note: _This is purely the output of the chat conversation and does not contain any raw data, codebase snippets, etc. used to generate the output._
 
+for real
+
 ### User Input
 
 analyze the whole project, give me a short descriptiong of the tech used, and the complexity of the project, dont run it yet
